@@ -13,9 +13,7 @@ public interface Client {
     
     void enqueue(String queue, String job);
     
-//    Enqueue at a specifi time and see what happens here
     void enqueAt(String queue, String job);
     
-//    This just means I can enqueue work as it comes here
     void recurringEnque(String queue, String job);
 }
