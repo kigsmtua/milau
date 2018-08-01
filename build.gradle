@@ -17,8 +17,14 @@ targetCompatibility = 1.8
 
 mainClassName = 'com.milau.task.App'
 
-
+//We need to have jackson as welll
 dependencies {
+    compile group: 'redis.clients', name: 'jedis', version: '2.9.0'
+    compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
+    testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.6'
+    compile group: 'co.paralleluniverse', name: 'quasar-core', version: '0.7.5'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     compile 'com.google.guava:guava:23.0'
     testCompile 'junit:junit:4.12'
 }
