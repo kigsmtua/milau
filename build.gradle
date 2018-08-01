@@ -14,16 +14,19 @@ description = """Distributed time based queue based on redis"""
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+//Use the cli app as the entrance for this application
+mainClassName = 'com.milau.cli.App'
 
-mainClassName = 'com.milau.task.App'
-
-//We need to have jackson as welll
 dependencies {
+//    Well have to have a jcommander app here that takes the values
+//    That  needs to come back along and use thie values from an application perspective
     compile group: 'redis.clients', name: 'jedis', version: '2.9.0'
     compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
     testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.6'
     compile group: 'co.paralleluniverse', name: 'quasar-core', version: '0.7.5'
+    // https://mvnrepository.com/artifact/com.beust/jcommander
+    compile group: 'com.beust', name: 'jcommander', version: '1.72'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     compile 'com.google.guava:guava:23.0'
     testCompile 'junit:junit:4.12'
@@ -33,7 +36,7 @@ jar {
     manifest {
         attributes('Implementation-Title': project.name,
                    'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-                   'Main-Class': 'com.milau.task.App',
+                   'Main-Class': 'com.milau.cli.App',
                    'Implementation-Version': project.version)
     }
 }

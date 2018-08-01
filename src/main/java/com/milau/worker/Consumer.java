@@ -12,8 +12,6 @@ package com.milau.worker;
 public class Consumer {
     
     public void execute(){
-//        Pop stuff from queue and distribute the work
-//        The worker needs to come alongside and use the values that need to come back
-//  
+
     }
 }
