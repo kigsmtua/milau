@@ -3,17 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.milau.client;
+package io.github.kigsmtua.milau.worker;
 
 /**
  *
  * @author john.kiragu
  */
-public interface Client {
+public class Consumer {
     
-    void enqueue(String queue, String job);
-    
-    void enqueAt(String queue, String job);
-    
-    void recurringEnque(String queue, String job);
+    public void execute(){
+
+    }
 }
