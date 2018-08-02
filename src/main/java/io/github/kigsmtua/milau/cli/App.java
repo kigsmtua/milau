@@ -11,8 +11,6 @@ import com.beust.jcommander.Parameter;
  * @author john.kiragu
  */
 public class App {
-//    This is how we need to look at the concurrency of the values that 
-//    Come here and use the values that need to come here and use the va
     @Parameter(names={"--concurrency", "-c"})
     int concurrency;
     @Parameter(names={"--name", "-n"})
