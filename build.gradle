@@ -66,7 +66,7 @@ publishing{
         mavenJava(MavenPublication){
             artifactId = 'Milau'
             from components.java
-            artifact sourcesJar
+            artifact sourceJar
             artifact javadocJar
             pom{
                 name = 'Milau'
