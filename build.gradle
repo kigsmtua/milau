@@ -6,7 +6,7 @@ apply plugin: 'application'
 group = 'io.github.kigsmtua'
 version = '0.1.0'
 archivesBaseName = "milau"
-description = """Distributed time based queue based on redis"""
+description = """A distributed task queue supporting priorities and time based exection based on redis"""
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 mainClassName = 'com.milau.cli.App'
@@ -59,111 +59,4 @@ artifacts {
 
 signing {
     sign configurations.archives
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            customizePom(pom)
-            groupId 'io.github.kigsmtua'
-            artifactId 'milau'
-            version '0.1.0'
-
-            from components.java
-
-            pom.withXml {
-                def pomFile = file("${project.buildDir}/generated-pom.xml")
-                writeTo(pomFile)
-                def pomAscFile = signing.sign(pomFile).signatureFiles[0]
-                artifact(pomAscFile) {
-                    classifier = null
-                    extension = 'pom.asc'
-                }
-            }
-
-            artifact(sourceJar) {
-                classifier = 'sources'
-            }
-            artifact(javadocJar) {
-                classifier = 'javadoc'
-            }
-
-            // create the signed artifacts
-            project.tasks.signArchives.signatureFiles.each {
-                artifact(it) {
-                    def matcher = it.file =~ /-(sources|javadoc)\.jar\.asc$/
-                    if (matcher.find()) {
-                        classifier = matcher.group(1)
-                    } else {
-                        classifier = null
-                    }
-                    extension = 'jar.asc'
-                }
-            }
-        }
-    }
-    repositories {
-        maven {
-            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-            credentials {
-                username ossrhUsername
-                password ossrhPassword
-            }
-        }
-    }
-}
-
-def customizePom(pom) {
-    pom.withXml {
-        def root = asNode()
-
-        root.dependencies.removeAll { dep ->
-            dep.scope == "test"
-        }
-
-        root.children().last() + {
-            resolveStrategy = Closure.DELEGATE_FIRST
-            description 'A distributed task queue supporting priorities and time based exection based on redis. '
-            name 'Milau'
-            url 'https://github.com/kigsmtua/milau'
-            organization {
-                name 'io.github.kigsmtua'
-                url 'https://github.com/kigsmtua'
-            }
-            issueManagement {
-                system 'GitHub'
-                url 'https://github.com/kigsmtua/milau/issues'
-            }
-            licenses {
-                license {
-                    name 'MIT License'
-                    url 'https://github.com/kigsmtua/milau/blob/master/LICENSE'
-                    distribution 'repo'
-                }
-            }
-            scm {
-                url 'https://github.com/kigsmtua/milau'
-                connection 'scm:git:git://github.com/kigsmtua/milau.git'
-                developerConnection 'scm:git:ssh://git@github.com:kigsmtua/milau.git'
-            }
-            developers {
-                developer {
-                    name 'John Kiragu'
-                    email 'mutuakiragu@gmail.com'
-                }
-            }
-        }
-    }
-}
-
-model {
-    tasks.generatePomFileForMavenJavaPublication {
-        destination = file("$buildDir/generated-pom.xml")
-    }
-    tasks.publishMavenJavaPublicationToMavenLocal {
-        dependsOn project.tasks.signArchives
-    }
-    tasks.publishMavenJavaPublicationToMavenRepository {
-        dependsOn project.tasks.signArchives
-    }
 }
