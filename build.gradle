@@ -60,3 +60,19 @@ artifacts {
 signing {
     sign configurations.archives
 }
+
+publishing{
+    publications{
+        mavenJava(MavenPublication){
+            artifactId = 'Milau'
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom{
+                name = 'Milau'
+                description = """A distributed task queue supporting priorities and time based execution based on redis"""
+                url ='https://github.com/kigsmtua/milau'
+            }
+        }
+    }
+}
