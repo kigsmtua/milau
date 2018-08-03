@@ -42,13 +42,13 @@ test {
 }
 
 task sourceJar(type: Jar) {
-    classifier "sources"
     from sourceSets.main.allJava
+    classifier = 'sources'
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier "javadoc"
-    from javadoc.destinationDir
+task javadocJar(type: Jar) {
+    from javadoc
+    classifier = 'javadoc'
 }
 
 artifacts {
@@ -57,9 +57,6 @@ artifacts {
     archives javadocJar
 }
 
-signing {
-    sign configurations.archives
-}
 
 publishing{
     publications{
@@ -70,9 +67,48 @@ publishing{
             artifact javadocJar
             pom{
                 name = 'Milau'
-                description = """A distributed task queue supporting priorities and time based execution based on redis"""
+                description ='A distributed task queue supporting priorities and time based execution based on redis'
                 url ='https://github.com/kigsmtua/milau'
+           
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://github.com/kigsmtua/milau/blob/master/LICENSE'
+                        distribution = 'repo'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/kigsmtua/milau'
+                    connection = 'scm:git:git://github.com/kigsmtua/milau.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:kigsmtua/milau.git'
+                }
+                developers {
+                    developer {
+                        id = 'kigsmtua'
+                        name = 'John Kiragu'
+                        email = 'mutuakiragu@gmail.com'
+                    }
+                }
             }
         }
+    }
+    repositories {
+        maven {
+            url = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html4', true)
     }
 }
