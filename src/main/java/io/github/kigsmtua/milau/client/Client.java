@@ -28,7 +28,6 @@ package io.github.kigsmtua.milau.client;
  * @author john.kiragu
  */
 public interface Client {
-//    This guy just is meant to do work that is extremely simple and pass it along
     void enqueue(String queue, String job);
     
     void enqueAt(String queue, String job);
