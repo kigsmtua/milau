@@ -39,5 +39,8 @@ public class App {
     public static void main(String[] args) {
         System.out.println("Step up implementation of work....");
     }
+    public String getGreeting(){
+     return "app should have a greeting";
+    }
     
 }
