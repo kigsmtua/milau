@@ -12,6 +12,6 @@ package io.github.kigsmtua.milau.worker;
 public class Consumer {
     
     public void execute(){
-
+//        The only consumer applications you may need
     }
 }
