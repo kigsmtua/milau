@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: 'application'
+apply plugin: 'jacoco'
 
 group = 'io.github.kigsmtua'
 version = '0.1.0'
@@ -34,6 +35,21 @@ jar {
                    'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
                    'Main-Class': 'com.milau.cli.App',
                    'Implementation-Version': project.version)
+    }
+}
+
+task codeCoverageReport(type: JacocoReport) {
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+    subprojects.each {
+        sourceSets it.sourceSets.main
+    }
+
+    reports {
+        xml.enabled true
+        xml.destination "${buildDir}/reports/jacoco/report.xml"
+        html.enabled false
+        csv.enabled false
     }
 }
 
