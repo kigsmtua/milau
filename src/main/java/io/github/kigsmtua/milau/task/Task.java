@@ -21,17 +21,14 @@
 * SOFTWARE.
 *
 */
-package io.github.kigsmtua.milau.client;
+package io.github.kigsmtua.milau.task;
 
 /**
  *
  * @author john.kiragu
  */
-public interface Client {
-//    This guy just is meant to do work that is extremely simple and pass it along
-    void enqueue(String queue, String job);
+
+
+public interface Task {
     
-    void enqueAt(String queue, String job);
-    
-    void recurringEnque(String queue, String job);
 }
