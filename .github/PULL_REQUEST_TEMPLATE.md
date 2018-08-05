@@ -1,5 +1,5 @@
 *Note*: Before submitting this pull request, please review our [contributing
-guidelines](https://github.com/milau/CONTRIBUTING.md).
+guidelines](https://github.com/kigsmtua/milau/CONTRIBUTING.md).
 
 ## Description
 
