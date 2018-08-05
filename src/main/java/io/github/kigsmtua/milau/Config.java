@@ -30,7 +30,7 @@ import java.util.Set;
  * An immutable configuration bean for use with the rest of the project.
  * @author john.kiragu
  */
-public class Config {
+public final class Config {
     
     private final String host;
     private final int port;
