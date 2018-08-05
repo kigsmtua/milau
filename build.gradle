@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: 'application'
+apply plugin: 'jacoco'
 
 group = 'io.github.kigsmtua'
 version = '0.1.0'
@@ -36,6 +37,15 @@ jar {
                    'Implementation-Version': project.version)
     }
 }
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled false
+    }
+}
+
+check.dependsOn jacocoTestReport
 
 test {
     testLogging.showStandardStreams = true
