@@ -20,27 +20,44 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *
-*/
+ */
 package io.github.kigsmtua.milau.client;
+
+import io.github.kigsmtua.milau.Config;
 import io.github.kigsmtua.milau.task.Task;
 
 /**
- *
+ * Common logic for Client implementations.
  * @author john.kiragu
  */
-public interface Client {
+public abstract class AbstractClient implements Client{
     
-     /**
-     * Queues a job in a given queue to be run. at a given time
-     * defaults to now
+    protected AbstractClient(Config config){
+
+    }
+    
+    /**
+     * Actually enqueue the serialized job.
+     * 
      * @param queue
      *            the queue to add the Job to
-     * @param task
-     *            the task to be enqueued
+     * @param msg
+     *            the serialized Job
      * @param future
-     *              timestamp when the job will run
-     * @throws IllegalArgumentException
-     *             if the queue is null or empty or if the job is null
+     *            when the job will be executed
+     * @throws Exception
+     *             in case something goes wrong
      */
-    void enqueue(String queue, Task task ,long future);
+    protected abstract void doEnqueue(String queue, String msg, long future) throws Exception;
+
+    @Override
+    public void enqueue(String queue, Task task, long future) {
+        try{
+            doEnqueue(queue, queue, future);
+        }catch(Exception e){
+             //dosomething
+        }
+    }
 }
+    
+    

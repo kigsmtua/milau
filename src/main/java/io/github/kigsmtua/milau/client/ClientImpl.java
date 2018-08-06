@@ -20,27 +20,18 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *
-*/
+ */
 package io.github.kigsmtua.milau.client;
-import io.github.kigsmtua.milau.task.Task;
+
+import io.github.kigsmtua.milau.Config;
 
 /**
  *
  * @author john.kiragu
  */
-public interface Client {
+public class ClientImpl {
     
-     /**
-     * Queues a job in a given queue to be run. at a given time
-     * defaults to now
-     * @param queue
-     *            the queue to add the Job to
-     * @param task
-     *            the task to be enqueued
-     * @param future
-     *              timestamp when the job will run
-     * @throws IllegalArgumentException
-     *             if the queue is null or empty or if the job is null
-     */
-    void enqueue(String queue, Task task ,long future);
+    public ClientImpl(final Config config){
+        
+    }
 }
