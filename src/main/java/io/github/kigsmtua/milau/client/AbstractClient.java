@@ -25,6 +25,8 @@ package io.github.kigsmtua.milau.client;
 
 import io.github.kigsmtua.milau.Config;
 import io.github.kigsmtua.milau.task.Task;
+import redis.clients.jedis.Jedis;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Common logic for Client implementations.
@@ -53,9 +55,28 @@ public abstract class AbstractClient implements Client{
     @Override
     public void enqueue(String queue, Task task, long future) {
         try{
-            doEnqueue(queue, queue, future);
+            ObjectMapper mapper = new ObjectMapper();
+            doEnqueue(queue,mapper.writeValueAsString(task), future);
         }catch(Exception e){
              //dosomething dosomething
         }
     }
+
+     /**
+     * Helper method that encapsulates the minimum logic for adding a job to a
+     * queue.
+     * 
+     * @param jedis
+     *            the connection to Redis
+     * @param namespace
+     *            the Redis namespace
+     * @param queue
+     *            the queue name
+     * @param jobJson
+     *            the job serialized as JSON
+     */
+    public static void doEnqueue(final Jedis jedis, final String namespace, final String queue, final String jobJson) {
+
+    }
+
 }
