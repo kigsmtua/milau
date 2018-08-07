@@ -27,6 +27,7 @@ import io.github.kigsmtua.milau.Config;
 import io.github.kigsmtua.milau.task.Task;
 import redis.clients.jedis.Jedis;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
 
 /**
  * Common logic for Client implementations.
@@ -35,7 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public abstract class AbstractClient implements Client{
 
     protected AbstractClient(Config config){
-
+        
     }
 
     /**
@@ -68,15 +69,17 @@ public abstract class AbstractClient implements Client{
      * 
      * @param jedis
      *            the connection to Redis
-     * @param namespace
-     *            the Redis namespace
      * @param queue
      *            the queue name
+     * @param future
+     *            timestamp when the time should be execute
      * @param jobJson
-     *            the job serialized as JSON
+     *            serialized class to be picked from the queue
      */
-    public static void doEnqueue(final Jedis jedis, final String namespace, final String queue, final String jobJson) {
-
+    public static void doEnqueue(final Jedis jedis, final String queue,final long future,final String jobJson) {
+        HashMap<String,Double> scores = new HashMap<>();
+        scores.put(jobJson, Double.valueOf(future));
+        jedis.zadd(queue, scores);
     }
 
 }

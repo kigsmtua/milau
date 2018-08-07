@@ -128,5 +128,54 @@ public class Config {
         database = builder.database;
         sentinels = builder.sentinels;
         masterName = builder.masterName;
-    }    
+    }  
+    
+    /**
+     * @return the Redis hostname
+     */
+    public String getHost() {
+        return this.host;
+    }
+
+    /**
+     * @return the Redis port number
+     */
+    public int getPort() {
+        return this.port;
+    }
+
+    /**
+     * @return the Redis connection timeout
+     */
+    public int getTimeout() {
+        return this.timeout;
+    }
+
+    /**
+     * @return the Redis password
+     */
+    public String getPassword() {
+        return this.password;
+    }
+    /**
+     * @return the Redis database to use
+     */
+    public int getDatabase() {
+        return this.database;
+    }
+
+    /**
+     * @return the Redis set of sentinels
+     */
+    public Set<String> getSentinels() {
+        return this.sentinels;
+    }
+
+    /**
+     * @return the Redis master name
+     */
+    public String getMasterName() {
+        return this.masterName;
+    }
+
 }
