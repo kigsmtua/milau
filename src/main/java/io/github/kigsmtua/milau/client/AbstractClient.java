@@ -55,7 +55,7 @@ public abstract class AbstractClient implements Client{
         try{
             doEnqueue(queue, queue, future);
         }catch(Exception e){
-             //dosomething
+             //dosomething dosomething
         }
     }
 }
