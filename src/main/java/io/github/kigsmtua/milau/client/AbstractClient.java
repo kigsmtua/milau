@@ -31,14 +31,14 @@ import io.github.kigsmtua.milau.task.Task;
  * @author john.kiragu
  */
 public abstract class AbstractClient implements Client{
-    
+
     protected AbstractClient(Config config){
 
     }
-    
+
     /**
      * Actually enqueue the serialized job.
-     * 
+     *
      * @param queue
      *            the queue to add the Job to
      * @param msg
