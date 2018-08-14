@@ -20,15 +20,20 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *
-*/
+ */
 package io.github.kigsmtua.milau.task;
+
+import java.io.Serializable;
 
 /**
  *
  * @author john.kiragu
  */
-
-
-public interface Task {
+public interface Task extends Serializable{
+    long serialVersionUID = -1523425239512691383L;
     
+    /**
+     * The tasks should implement the perform method
+     */
+    void perform();
 }

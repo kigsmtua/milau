@@ -107,4 +107,5 @@ venv.bak/
 /.nb-gradle/
 .nb-gradle-properties
 .idea
+nbproject/
 license.txt

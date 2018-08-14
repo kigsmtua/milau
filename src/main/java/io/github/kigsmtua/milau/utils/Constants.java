@@ -20,27 +20,41 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *
-*/
-package io.github.kigsmtua.milau.client;
-import io.github.kigsmtua.milau.task.Task;
+ */
+package io.github.kigsmtua.milau.utils;
 
 /**
  *
  * @author john.kiragu
  */
-public interface Client {
+public interface Constants {
     
-     /**
-     * Queues a job in a given queue to be run. at a given time
-     * defaults to now
-     * @param queue
-     *            the queue to add the Job to
-     * @param task
-     *            the task to be enqueued
-     * @param future
-     *              timestamp when the job will run
-     * @throws IllegalArgumentException
-     *             if the queue is null or empty or if the job is null
+    /**
+     * ISO-8601 compliant format
      */
-    void enqueue(String queue, Task task ,long future);
+    String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+    
+    String COLON = ":";
+    
+    String FAILED = "failed";
+    
+    String PROCESSED = "processed";
+    
+    String QUEUE = "queue";
+    
+    String QUEUES = "queues";
+    
+    String STARTED = "started";
+    
+    String STAT = "stat";
+    
+    String WORKER = "worker";
+    
+    String WORKERS = "workers";
+    
+    String CHANNEL = "channel";
+    
+    String INFLIGHT = "inflight";
+    
+    String FREQUENCY = "frequency";
 }
