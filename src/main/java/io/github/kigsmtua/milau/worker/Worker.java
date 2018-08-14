@@ -20,15 +20,21 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *
-*/
+ */
 package io.github.kigsmtua.milau.worker;
 
 /**
  *
+ * A worker is implemented by client code.
+ * Our implementation will try to be as multi-threaded as possible
+ * Using actors, fibers and channels to achieve this implementation
  * @author john.kiragu
  */
-public class Consumer {
+public interface Worker {
     
-    public void execute(){
-    }
+    /// When I start a worker how many fibers do I want to be implemented per
+    /// Queue which means we can have an implementation that comes alongside
+    /// Such application values
+    /// Listeners will be used used so in essense you create a consumer and implement listeners
+    /// For application values
 }
