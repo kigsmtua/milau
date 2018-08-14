@@ -4,6 +4,19 @@ apply plugin: 'signing'
 apply plugin: 'application'
 apply plugin: 'jacoco'
 
+apply plugin: 'checkstyle'
+
+checkstyle {
+    toolVersion '7.8.1'
+    configFile file("config/checkstyle/checkstyle.xml")
+}
+checkstyleMain {
+    source ='src/main/java'
+}
+checkstyleTest {
+    source ='src/test/java'
+}
+
 group = 'io.github.kigsmtua'
 version = '0.1.0'
 archivesBaseName = "milau"
@@ -80,7 +93,7 @@ publishing{
                 name = 'Milau'
                 description ='A distributed task queue supporting priorities and time based execution based on redis'
                 url ='https://github.com/kigsmtua/milau'
-           
+
                 licenses {
                     license {
                         name = 'MIT License'

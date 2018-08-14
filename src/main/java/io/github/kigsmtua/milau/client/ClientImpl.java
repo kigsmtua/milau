@@ -45,17 +45,19 @@ public class ClientImpl extends AbstractClient {
      * @throws IllegalArgumentException
      *             if the config is null
      */
-    public ClientImpl(final Config config){
+    public ClientImpl(final Config config) {
         super(config);
         this.config = config;
-        this.jedis = new Jedis(config.getHost(), config.getPort(), config.getTimeout());
+        this.jedis = new Jedis(config.getHost(),
+                               config.getPort(), config.getTimeout());
     }
     
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doEnqueue(String queue, String jobJson, long future) throws Exception {
+    protected void doEnqueue(String queue, String jobJson,
+            long future) throws Exception {
         /// @TODO clean up this implementation 
         RedisUtils.ensureConnection(this.jedis);
         doEnqueue(this.jedis, queue, future, jobJson);

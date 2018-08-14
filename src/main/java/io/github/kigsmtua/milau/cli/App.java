@@ -29,18 +29,17 @@ import com.beust.jcommander.Parameter;
  * @author john.kiragu
  */
 public class App {
-    @Parameter(names={"--concurrency", "-c"})
+    @Parameter(names = {"--concurrency", "-c"})
     int concurrency;
-    @Parameter(names={"--name", "-n"})
+    @Parameter(names = {"--name", "-n"})
     String name;
-    @Parameter(names={"--queue", "-n"})
+    @Parameter(names = {"--queue", "-n"})
     String queue;
     
     public static void main(String[] args) {
-        System.out.println("Step up implementation of work....");
         
     }
-    public String getGreeting(){
+    public String getGreeting() {
       return "app should have a greeting";
     }
     

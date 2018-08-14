@@ -29,11 +29,11 @@ import java.io.Serializable;
  *
  * @author john.kiragu
  */
-public interface Task extends Serializable{
+public interface Task extends Serializable {
     long serialVersionUID = -1523425239512691383L;
     
     /**
-     * The tasks should implement the perform method
+     * The tasks should implement the perform method.
      */
     void perform();
 }
