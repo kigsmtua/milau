@@ -30,7 +30,7 @@ package io.github.kigsmtua.milau.utils;
 public interface Constants {
     
     /**
-     * ISO-8601 compliant format
+     * ISO-8601 compliant format.
      */
     String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
     

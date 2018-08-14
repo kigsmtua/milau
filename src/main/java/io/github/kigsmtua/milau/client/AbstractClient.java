@@ -23,17 +23,17 @@
  */
 package io.github.kigsmtua.milau.client;
 
-import io.github.kigsmtua.milau.Config;
-import io.github.kigsmtua.milau.task.Task;
+import java.util.HashMap;
 import redis.clients.jedis.Jedis;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.HashMap;
+import io.github.kigsmtua.milau.Config;
+import io.github.kigsmtua.milau.task.Task;
 
 /**
  * Common logic for Client implementations.
  * @author john.kiragu
  */
-public abstract class AbstractClient implements Client{
+public abstract class AbstractClient implements Client {
 
     protected AbstractClient(Config config){
         
@@ -51,14 +51,15 @@ public abstract class AbstractClient implements Client{
      * @throws Exception
      *             in case something goes wrong
      */
-    protected abstract void doEnqueue(String queue, String msg, long future) throws Exception;
+    protected abstract void doEnqueue(String queue, String msg,
+            long future) throws Exception;
 
     @Override
     public void enqueue(String queue, Task task, long future) {
-        try{
+        try {
             ObjectMapper mapper = new ObjectMapper();
-            doEnqueue(queue,mapper.writeValueAsString(task), future);
-        }catch(Exception e){
+            doEnqueue(queue, mapper.writeValueAsString(task), future);
+        } catch (Exception e) {
              //dosomething dosomething
         }
     }
@@ -76,8 +77,9 @@ public abstract class AbstractClient implements Client{
      * @param jobJson
      *            serialized class to be picked from the queue
      */
-    public static void doEnqueue(final Jedis jedis, final String queue,final long future,final String jobJson) {
-        HashMap<String,Double> scores = new HashMap<>();
+    public static void doEnqueue(final Jedis jedis, final String queue, 
+            final long future, final String jobJson) {
+        HashMap<String, Double> scores = new HashMap<>();
         scores.put(jobJson, Double.valueOf(future));
         jedis.zadd(queue, scores);
     }

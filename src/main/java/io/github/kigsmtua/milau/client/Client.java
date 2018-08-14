@@ -31,7 +31,7 @@ import io.github.kigsmtua.milau.task.Task;
 public interface Client {
     
      /**
-     * Queues a job in a given queue to be run. at a given time
+     * Queues a job in a given queue to be run. at a given time.
      * defaults to now
      * @param queue
      *            the queue to add the Job to
@@ -42,5 +42,5 @@ public interface Client {
      * @throws IllegalArgumentException
      *             if the queue is null or empty or if the job is null
      */
-    void enqueue(String queue, Task task ,long future);
+    void enqueue(String queue, Task task, long future);
 }

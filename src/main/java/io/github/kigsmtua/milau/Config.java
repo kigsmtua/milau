@@ -40,7 +40,10 @@ public final class Config {
     private final Set<String> sentinels;
     private final String masterName;
     
-    public static class ConfigBuilder{
+    /**
+     * Simple builder for the Config class.
+     */
+    public static class ConfigBuilder {
 
 
        //Required parameters
@@ -55,72 +58,72 @@ public final class Config {
        private  String masterName = null;
        
         /**
-         * created Config instance will have the given timeout value
+         * created Config instance will have the given timeout value.
          * @param val the timeout value
          * @return this ConfigBuilder
          */
-       public ConfigBuilder timeout(int val){
+       public ConfigBuilder timeout(int val) {
            timeout = val;
            return this; 
        }
        /**
-        * created Config instance will have the given password value
+        * created Config instance will have the given password value.
         * @param val the password value
         * @return this ConfigBuilder
         */
-       public ConfigBuilder password(String val){
+       public ConfigBuilder password(String val) {
            password = val;
            return this; 
        }
        /**
-        * created Config instance will have the given database value
+        * created Config instance will have the given database value.
         * @param val the database value
         * @return this ConfigBuilder
         */
-       public ConfigBuilder database(int val){
+       public ConfigBuilder database(int val) {
            database = val;
            return this; 
        }
        /**
-        * created Config instance will have the given sentinels value
+        * created Config instance will have the given sentinels value.
         * @param val the sentinels value
         * @return this ConfigBuilder
         */
-       public ConfigBuilder sentinels(Set<String> val){
+       public ConfigBuilder sentinels(Set<String> val) {
            sentinels = val;
            return this; 
        }
        /**
-        * created Config instance will have the given masterName value
+        * created Config instance will have the given masterName value.
         * @param val the masterName value
         * @return this ConfigBuilder
         */
-       public ConfigBuilder masterName(String val){
+       public ConfigBuilder masterName(String val) {
            masterName = val;
            return this; 
        }
        /**
-        * Create ConfigBuilder instance with required host and port
+        * Create ConfigBuilder instance with required host and port.
         * @param host redis host value
         * @param port redis port value
         */
-       public ConfigBuilder(String host, int port){   
+       public ConfigBuilder(String host, int port) {   
            this.host = host;
            this.port = port;
        }
        /**
-        * create a new Config initialized with the current values
+        * create a new Config initialized with the current values.
         * @return new Config instance
         */
-       public Config build(){
+       public Config build() {
            return new Config(this);
        }
     }
     /**
-     * create new Config instance based on passed builder instance
+     * create new Config instance based on passed builder instance.
      * @param builder 
      */
-    private Config(ConfigBuilder builder){
+    private Config(ConfigBuilder builder) {
         host = builder.host;
         port = builder.port;
         timeout = builder.timeout;
@@ -131,48 +134,48 @@ public final class Config {
     }  
     
     /**
-     * @return the Redis hostname
+     * @return the Redis hostname.
      */
     public String getHost() {
         return this.host;
     }
 
     /**
-     * @return the Redis port number
+     * @return the Redis port number.
      */
     public int getPort() {
         return this.port;
     }
 
     /**
-     * @return the Redis connection timeout
+     * @return the Redis connection timeout.
      */
     public int getTimeout() {
         return this.timeout;
     }
 
     /**
-     * @return the Redis password
+     * @return the Redis password.
      */
     public String getPassword() {
         return this.password;
     }
     /**
-     * @return the Redis database to use
+     * @return the Redis database to use.
      */
     public int getDatabase() {
         return this.database;
     }
 
     /**
-     * @return the Redis set of sentinels
+     * @return the Redis set of sentinels.
      */
     public Set<String> getSentinels() {
         return this.sentinels;
     }
 
     /**
-     * @return the Redis master name
+     * @return the Redis master name.
      */
     public String getMasterName() {
         return this.masterName;
