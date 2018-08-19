@@ -32,5 +32,5 @@ package io.github.kigsmtua.milau.worker;
  */
 public interface Worker {
     
-  
+
 }
