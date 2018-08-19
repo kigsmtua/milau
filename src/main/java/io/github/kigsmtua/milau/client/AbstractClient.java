@@ -20,20 +20,23 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *
- */
+*/
 package io.github.kigsmtua.milau.client;
 
 import java.util.HashMap;
-import redis.clients.jedis.Jedis;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.github.kigsmtua.milau.Config;
 import io.github.kigsmtua.milau.task.Task;
 
+import redis.clients.jedis.Jedis;
+
 /**
- * Common logic for Client implementations.
+ * Common logic for ClientInterface implementations.
  * @author john.kiragu
  */
-public abstract class AbstractClient implements Client {
+public abstract class AbstractClient implements ClientInterface {
 
     protected AbstractClient(Config config){
         

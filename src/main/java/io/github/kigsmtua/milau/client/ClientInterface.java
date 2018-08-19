@@ -20,47 +20,27 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *
- */
+*/
 package io.github.kigsmtua.milau.client;
-
-import io.github.kigsmtua.milau.Config;
-import io.github.kigsmtua.milau.utils.RedisUtils;
-import redis.clients.jedis.Jedis;
+import io.github.kigsmtua.milau.task.Task;
 
 /**
  *
  * @author john.kiragu
  */
-public class ClientImpl extends AbstractClient {
+public interface ClientInterface {
     
-    private final Config config;
-    private final Jedis jedis;
-    
-    /**
-     * Create a new ClientImpl, which creates it's own connection to Redis using
-     * values from the config.
-     *
-     * @param config
-     *            used to create a connection to Redis
+     /**
+     * Queues a job in a given queue to be run. at a given time.
+     * defaults to now
+     * @param queue
+     *            the queue to add the Job to
+     * @param task
+     *            the task to be enqueued
+     * @param future
+     *              timestamp when the job will run
      * @throws IllegalArgumentException
-     *             if the config is null
+     *             if the queue is null or empty or if the job is null
      */
-    public ClientImpl(final Config config) {
-        super(config);
-        this.config = config;
-        this.jedis = new Jedis(config.getHost(),
-                               config.getPort(), config.getTimeout());
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doEnqueue(String queue, String jobJson,
-            long future) throws Exception {
-        /// @TODO clean up this implementation 
-        RedisUtils.ensureConnection(this.jedis);
-        doEnqueue(this.jedis, queue, future, jobJson);
-    }
-    
+    void enqueue(String queue, Task task, long future);
 }
