@@ -28,9 +28,4 @@ package io.github.kigsmtua.milau.worker;
  * @author john.kiragu
  */
 public class Worker {
-    //This is what a worker looks like
-    //Play around and see what this actually
-    //Looks like
-    //Meaning the messages can come alongside and use this implementation
-    //All alongside such values
 }
