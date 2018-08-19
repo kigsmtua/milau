@@ -37,10 +37,8 @@ public class App {
     String queue;
     
     public static void main(String[] args) {
-        
-    }
-    public String getGreeting() {
-      return "app should have a greeting";
+
+        // Test main methods for application here
     }
     
 }
