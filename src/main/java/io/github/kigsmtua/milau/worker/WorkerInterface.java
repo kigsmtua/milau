@@ -25,12 +25,11 @@ package io.github.kigsmtua.milau.worker;
 
 /**
  *
+ * A worker is implemented by client code.
+ * Our implementation will try to be as multi-threaded as possible
+ * Using actors, fibers and channels to achieve this implementation
  * @author john.kiragu
  */
-public class Worker {
-    //This is what a worker looks like
-    //Play around and see what this actually
-    //Looks like
-    //Meaning the messages can come alongside and use this implementation
-    //All alongside such values
+public interface WorkerInterface extends ExecutorInterface {
+    
 }

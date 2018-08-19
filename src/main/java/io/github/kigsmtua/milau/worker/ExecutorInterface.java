@@ -27,5 +27,7 @@ package io.github.kigsmtua.milau.worker;
  *
  * @author john.kiragu
  */
-public interface Executor {
+public interface ExecutorInterface {
+    
+   
 }
