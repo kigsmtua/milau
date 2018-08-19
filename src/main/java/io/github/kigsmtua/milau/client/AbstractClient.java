@@ -29,7 +29,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kigsmtua.milau.Config;
 import io.github.kigsmtua.milau.task.Task;
-
 import redis.clients.jedis.Jedis;
 
 /**
