@@ -32,9 +32,5 @@ package io.github.kigsmtua.milau.worker;
  */
 public interface Worker {
     
-    /// When I start a worker how many fibers do I want to be implemented per
-    /// Queue which means we can have an implementation that comes alongside
-    /// Such application values
-    /// Listeners will be used used so in essense you create a consumer and implement listeners
-    /// For application values
+  
 }
