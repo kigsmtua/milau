@@ -24,12 +24,23 @@
 package io.github.kigsmtua.milau.worker;
 
 /**
- *
- * A worker is implemented by client code.
- * Our implementation will try to be as multi-threaded as possible
- * Using actors, fibers and channels to achieve this implementation
+ * How a worker recover from errors.
  * @author john.kiragu
  */
-public interface Worker extends Executor {
+public enum RecoveryStrategy {
     
+    /**
+     * Worker should terminate.
+     */
+    TERMINATE,
+    
+    /**
+     * Worker should try reconnect to Redis.
+     */
+    RECONNECT,
+    
+    /**
+     * Worker should proceed.
+     */
+    PROCEED;
 }
