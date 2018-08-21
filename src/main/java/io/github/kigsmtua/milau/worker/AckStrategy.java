@@ -23,40 +23,15 @@
  */
 package io.github.kigsmtua.milau.worker;
 
-import io.github.kigsmtua.milau.Config;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import redis.clients.jedis.Jedis;
-
 /**
  *
  * @author john.kiragu
  */
-public class Worker implements ExecutorInterface {
-    
-    private static final Logger LOG = LoggerFactory.getLogger(Worker.class);
-    
-    protected final Config config;
-    protected final Jedis jedis;
-  
+public class AckStrategy {
     /**
-     * Instantiate a worker no?.
-     * @param config
-     * @param jedis
+     * Strategies used to Ack messages.
      */
-    public Worker(Config config, Jedis jedis) {
-        this.config = config;
-        this.jedis = jedis;
+    public enum Strategy {
     }
     
-    /***
-     * Implement the worker.
-     */
-    
-    public void work(){
-        ///Worker . worker
-    }
 }
-
