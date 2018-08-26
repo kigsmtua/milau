@@ -20,25 +20,27 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *
-*/
-package io.github.kigsmtua.milau.cli;
+ */
+package io.github.kigsmtua.milau.worker;
 
-import com.beust.jcommander.Parameter;
 /**
- *
+ * How a worker recover from errors.
  * @author john.kiragu
  */
-public class App {
-    @Parameter(names = {"--concurrency", "-c"})
-    int concurrency;
-    @Parameter(names = {"--name", "-n"})
-    String name;
-    @Parameter(names = {"--queue", "-n"})
-    String queue;
+public enum RecoveryStrategy {
     
-    public static void main(String[] args) {
-
-        // Test main methods for application here
-    }
+    /**
+     * Worker should terminate.
+     */
+    TERMINATE,
     
+    /**
+     * Worker should try reconnect to Redis.
+     */
+    RECONNECT,
+    
+    /**
+     * Worker should proceed.
+     */
+    PROCEED;
 }

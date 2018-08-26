@@ -20,25 +20,16 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *
-*/
-package io.github.kigsmtua.milau.cli;
+ */
+package io.github.kigsmtua.milau.worker;
 
-import com.beust.jcommander.Parameter;
 /**
  *
+ * A worker is implemented by client code.
+ * Our implementation will try to be as multi-threaded as possible
+ * Using actors, fibers and channels to achieve this implementation
  * @author john.kiragu
  */
-public class App {
-    @Parameter(names = {"--concurrency", "-c"})
-    int concurrency;
-    @Parameter(names = {"--name", "-n"})
-    String name;
-    @Parameter(names = {"--queue", "-n"})
-    String queue;
-    
-    public static void main(String[] args) {
-
-        // Test main methods for application here
-    }
+public interface WorkerInterface extends ExecutorInterface {
     
 }

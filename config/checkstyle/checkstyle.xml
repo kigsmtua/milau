@@ -75,13 +75,12 @@ page at http://checkstyle.sourceforge.net/config.html -->
         </module>
 
         <module name="ImportOrder">
-            <!-- Checks for out of order import statements. -->
-            <property name="severity" value="warning" />
-            <property name="ordered" value="true" />
-            <property name="groups" value="/([^j]|.[^a]|..[^v]|...[^a])/,/^javax?\./" />
-            <!-- This ensures that static imports go to the end. -->
-            <property name="option" value="bottom" />
-            <property name="tokens" value="STATIC_IMPORT, IMPORT" />
+          <property name="groups" value="/^java\./,javax,org,com"/>
+          <property name="ordered" value="true"/>
+          <property name="separated" value="true"/>
+          <property name="option" value="above"/>
+          <property name="sortStaticImportsAlphabetically" value="true"/>
+          <property name="severity" value="error" />
         </module>
 
         <module name="IllegalImport">

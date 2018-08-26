@@ -21,24 +21,26 @@
 * SOFTWARE.
 *
 */
-package io.github.kigsmtua.milau.cli;
+package io.github.kigsmtua.milau.client;
+import io.github.kigsmtua.milau.task.Task;
 
-import com.beust.jcommander.Parameter;
 /**
  *
  * @author john.kiragu
  */
-public class App {
-    @Parameter(names = {"--concurrency", "-c"})
-    int concurrency;
-    @Parameter(names = {"--name", "-n"})
-    String name;
-    @Parameter(names = {"--queue", "-n"})
-    String queue;
+public interface ClientInterface {
     
-    public static void main(String[] args) {
-
-        // Test main methods for application here
-    }
-    
+     /**
+     * Queues a job in a given queue to be run. at a given time.
+     * defaults to now
+     * @param queue
+     *            the queue to add the Job to
+     * @param task
+     *            the task to be enqueued
+     * @param future
+     *              timestamp when the job will run
+     * @throws IllegalArgumentException
+     *             if the queue is null or empty or if the job is null
+     */
+    void enqueue(String queue, Task task, long future);
 }

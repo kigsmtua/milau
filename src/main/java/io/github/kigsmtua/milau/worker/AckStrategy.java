@@ -20,25 +20,18 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *
-*/
-package io.github.kigsmtua.milau.cli;
+ */
+package io.github.kigsmtua.milau.worker;
 
-import com.beust.jcommander.Parameter;
 /**
  *
  * @author john.kiragu
  */
-public class App {
-    @Parameter(names = {"--concurrency", "-c"})
-    int concurrency;
-    @Parameter(names = {"--name", "-n"})
-    String name;
-    @Parameter(names = {"--queue", "-n"})
-    String queue;
-    
-    public static void main(String[] args) {
-
-        // Test main methods for application here
+public class AckStrategy {
+    /**
+     * Strategies used to Ack messages.
+     */
+    public enum Strategy {
     }
     
 }

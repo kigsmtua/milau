@@ -20,15 +20,43 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *
-*/
+ */
 package io.github.kigsmtua.milau.worker;
+
+import io.github.kigsmtua.milau.Config;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import redis.clients.jedis.Jedis;
 
 /**
  *
  * @author john.kiragu
  */
-public class Consumer {
+public class Worker implements ExecutorInterface {
     
-    public void execute(){
+    private static final Logger LOG = LoggerFactory.getLogger(Worker.class);
+    
+    protected final Config config;
+    protected final Jedis jedis;
+  
+    /**
+     * Instantiate a worker no?.
+     * @param config
+     * @param jedis
+     */
+    public Worker(Config config, Jedis jedis) {
+        this.config = config;
+        this.jedis = jedis;
+    }
+    
+    /***
+     * Implement the worker.
+     */
+    
+    public void work(){
+        ///Worker . worker
     }
 }
+
