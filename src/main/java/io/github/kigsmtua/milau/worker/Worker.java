@@ -23,11 +23,11 @@
  */
 package io.github.kigsmtua.milau.worker;
 
-import io.github.kigsmtua.milau.Config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.kigsmtua.milau.Config;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -44,7 +44,9 @@ public class Worker implements ExecutorInterface {
     /**
      * Instantiate a worker no?.
      * @param config
+     *          the configuration instance
      * @param jedis
+     *          the redis client instance
      */
     public Worker(Config config, Jedis jedis) {
         this.config = config;
@@ -56,7 +58,6 @@ public class Worker implements ExecutorInterface {
      */
     
     public void work(){
-        ///Worker . worker
     }
 }
 
