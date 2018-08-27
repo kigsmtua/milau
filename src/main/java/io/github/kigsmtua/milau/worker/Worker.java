@@ -24,38 +24,98 @@
 package io.github.kigsmtua.milau.worker;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.kigsmtua.milau.Config;
+import io.github.kigsmtua.milau.task.Task;
+import java.io.IOException;
 import redis.clients.jedis.Jedis;
 
 /**
  *
  * @author john.kiragu
  */
-public class Worker  {
+public class Worker implements Runnable {
     
     private static final Logger LOG = LoggerFactory.getLogger(Worker.class);
     
     protected final Config config;
+    
     protected final Jedis jedis;
+    
+    protected int concurrency;
   
     /**
      * Instantiate a worker no?.
      * @param config
      *          the configuration instance
+     * @param concurrency
+     *          the number of threads to actually run here
      */
-    public Worker(Config config) {
-        ///Configuration values need to come here
+    public Worker(Config config, int concurrency) {
         this.config = config;
         this.jedis = new Jedis(config.getHost(),
                                config.getPort(), config.getTimeout());
+        this.concurrency = concurrency;
+    }
+    
+    /**
+     * Poll for tasks that are ready for execution.
+     */
+    public void pollForTasks() {
+        while (true) {
+            try {
+               final String key = "currqueue";
+               final String now = Long.toString(System.currentTimeMillis());
+               final String payload = jedis.rpop(key);
+               if (payload != null) {
+                   ObjectMapper mapper = new ObjectMapper();
+                   Task task = mapper.reader().readValue(payload);  
+                   //There is no correctness to this 
+                   //@TODO fix correctness
+                   processTask(task, key);
+               }
+            } catch (IOException e) {
+                ///What happens when 
+            } finally {
+
+            }
+        }
+    }
+    /**
+     * 
+     * @param task
+     *      The task to actually process
+     * @param queue 
+     *      The queue that is currently being executed.
+     */
+    public void processTask(final Task task, String queue) {
+        try {
+            
+            task.perform();
+            handleSuccessfulTask(task, queue);
+        } catch (Exception ex) {
+           //Log exception that happens here 
+           handleFailedTask(task, queue);
+         
+        } finally {
+           ///This should look like it actually computes
+        }
+    }
+    
+    public void handleSuccessfulTask(final Task task, String queue) {
+        ///t
+    }
+    
+    public void handleFailedTask(final Task task, String queue) {
+    
     }
 
-    protected void poll(){
-        //Poll and see whatever that happens
-        //So we can have a jobfactory that does all of the above
+    @Override
+    public void run() {
+        pollForTasks();
     }
     
   }
