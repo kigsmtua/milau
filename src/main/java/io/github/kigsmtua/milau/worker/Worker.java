@@ -46,18 +46,11 @@ public class Worker implements ExecutorInterface {
      * @param config
      *          the configuration instance
      * @param jedis
-     *          the redis client instance
+     *          the Redis client instance
      */
     public Worker(Config config, Jedis jedis) {
         this.config = config;
         this.jedis = jedis;
-    }
-    
-    /***
-     * Implement the worker.
-     */
-    
-    public void work(){
     }
 }
 
