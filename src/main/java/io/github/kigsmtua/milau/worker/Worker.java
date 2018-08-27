@@ -34,7 +34,7 @@ import redis.clients.jedis.Jedis;
  *
  * @author john.kiragu
  */
-public class Worker implements ExecutorInterface {
+public class Worker  {
     
     private static final Logger LOG = LoggerFactory.getLogger(Worker.class);
     
@@ -45,12 +45,18 @@ public class Worker implements ExecutorInterface {
      * Instantiate a worker no?.
      * @param config
      *          the configuration instance
-     * @param jedis
-     *          the Redis client instance
      */
-    public Worker(Config config, Jedis jedis) {
+    public Worker(Config config) {
+        ///Configuration values need to come here
         this.config = config;
-        this.jedis = jedis;
+        this.jedis = new Jedis(config.getHost(),
+                               config.getPort(), config.getTimeout());
     }
-}
+
+    protected void poll(){
+        //Poll and see whatever that happens
+        //So we can have a jobfactory that does all of the above
+    }
+    
+  }
 

@@ -42,5 +42,5 @@ public interface ClientInterface {
      * @throws IllegalArgumentException
      *             if the queue is null or empty or if the job is null
      */
-    void enqueue(String queue, Task task, long future);
+    void enqueue(String queue, Task task, long future);    
 }

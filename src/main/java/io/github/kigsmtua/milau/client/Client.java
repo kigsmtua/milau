@@ -24,7 +24,6 @@
 package io.github.kigsmtua.milau.client;
 
 import io.github.kigsmtua.milau.Config;
-import io.github.kigsmtua.milau.utils.RedisUtils;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -37,19 +36,19 @@ public class Client extends AbstractClient {
     private final Jedis jedis;
     
     /**
-     * Create a new ClientImpl, which creates it's own connection to Redis using
-     * values from the config.
+     * Create a new Client, which creates it's own connection to Redis using
+     * values from the Config.
      *
      * @param config
      *            used to create a connection to Redis
      * @throws IllegalArgumentException
-     *             if the config is null
+     *             if the Config is null
      */
     public Client(final Config config) {
         super(config);
         this.config = config;
-        this.jedis = new Jedis(config.getHost(),
-                               config.getPort(), config.getTimeout());
+        this.jedis = new Jedis(this.config.getHost(),
+                               this.config.getPort(), this.config.getTimeout());
     }
     
     /**
@@ -58,8 +57,6 @@ public class Client extends AbstractClient {
     @Override
     protected void doEnqueue(String queue, String jobJson,
             long future) throws Exception {
-        /// @TODO clean up this implementation 
-        RedisUtils.ensureConnection(this.jedis);
         doEnqueue(this.jedis, queue, future, jobJson);
     }
     
