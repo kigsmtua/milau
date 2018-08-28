@@ -23,6 +23,7 @@
  */
 package io.github.kigsmtua.milau.worker;
 
+import co.paralleluniverse.fibers.Fiber;
 import java.io.IOException;
 
 
@@ -43,11 +44,11 @@ public class Worker implements Runnable {
     
     private static final Logger LOG = LoggerFactory.getLogger(Worker.class);
     
-    protected final Config config;
+    private final Config config;
     
-    protected final Jedis jedis;
+    private final Jedis jedis;
     
-    protected int concurrency;
+    private int concurrency;
   
     /**
      * Instantiate a worker no?.
@@ -65,24 +66,25 @@ public class Worker implements Runnable {
     
     /**
      * Poll for tasks that are ready for execution.
+     * The tasks that are ready for execution
      */
-    public void pollForTasks() {
+    private void pollForTasks() {
+        //Task should exit here
         while (true) {
             try {
                final String key = "currqueue";
                final String now = Long.toString(System.currentTimeMillis());
                final String payload = jedis.rpop(key);
                if (payload != null) {
+                   ///Payload ??
                    ObjectMapper mapper = new ObjectMapper();
                    Task task = mapper.reader().readValue(payload);  
-                   //There is no correctness to this 
-                   //@TODO fix correctness
                    processTask(task, key);
                }
             } catch (IOException e) {
-                ///What happens when 
+                //
             } finally {
-
+                System.out.println("Something .....");
             }
         }
     }
@@ -93,31 +95,35 @@ public class Worker implements Runnable {
      * @param queue 
      *      The queue that is currently being executed.
      */
-    public void processTask(final Task task, String queue) {
+    private void processTask(final Task task, String queue) {
         try {
             
             task.perform();
-            handleSuccessfulTask(task, queue);
+
+            handleSuccess(task, queue);
+            
         } catch (Exception ex) {
-           //Log exception that happens here 
-           handleFailedTask(task, queue);
-         
+            
+           handleFailure(task, queue);  
+           
         } finally {
-           ///This should look like it actually computes
+            System.out.println();
         }
     }
     
-    public void handleSuccessfulTask(final Task task, String queue) {
-        ///t
+    private void handleSuccess(final Task task, String queue) {
+       
     }
     
-    public void handleFailedTask(final Task task, String queue) {
+    private void handleFailure(final Task task, String queue) {
     
     }
 
     @Override
     public void run() {
+        
         pollForTasks();
+        
     }
     
   }
