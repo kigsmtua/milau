@@ -95,7 +95,7 @@ public class Client {
      * @param jobJson
      *            serialized class to be picked from the queue
      * 
-     * @TODO the operations required to execute a job should be atomic
+     * the operations required to execute a job should be atomic
      * to avoid a job that has been scheduled and there is no half baked jobs
      */
     private void doEnqueue(final String queue, 
