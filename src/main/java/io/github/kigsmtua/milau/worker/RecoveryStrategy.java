@@ -24,7 +24,7 @@
 package io.github.kigsmtua.milau.worker;
 
 /**
- * How a worker recover from errors.
+ *
  * @author john.kiragu
  */
 public enum RecoveryStrategy {
@@ -32,15 +32,13 @@ public enum RecoveryStrategy {
     /**
      * Worker should terminate.
      */
-    TERMINATE,
-    
+    TERMINATE, 
     /**
-     * Worker should try reconnect to Redis.
+     * Worker should attempt to reconnect to Redis.
      */
-    RECONNECT,
-    
+    RECONNECT, 
     /**
-     * Worker should proceed.
+     * Worker should ignore the error and proceed.
      */
     PROCEED;
 }

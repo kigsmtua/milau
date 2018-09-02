@@ -23,41 +23,144 @@
  */
 package io.github.kigsmtua.milau.worker;
 
+import java.io.IOException;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.github.kigsmtua.milau.Config;
+import io.github.kigsmtua.milau.task.Task;
 import redis.clients.jedis.Jedis;
 
 /**
- *
  * @author john.kiragu
  */
-public class Worker implements ExecutorInterface {
-    
+public class Worker implements Runnable {
+
     private static final Logger LOG = LoggerFactory.getLogger(Worker.class);
-    
-    protected final Config config;
-    protected final Jedis jedis;
-  
+
+    private final Config config;
+
+    private final Jedis jedis;
+
+    private final String queue;
+
+    protected static final long EMPTY_QUEUE_SLEEP_TIME = 500;
+
+    protected static final long RECONNECT_SLEEP_TIME = 5000;
+
+    protected static final int RECONNECT_ATTEMPTS = 120;
+
     /**
-     * Instantiate a worker no?.
-     * @param config
-     *          the configuration instance
-     * @param jedis
-     *          the redis client instance
+     * Worker polls for tasks from queues.
+     *
+     * @param config the configuration instance
+     * @param queue the queues this worker is listening or subscribed to
      */
-    public Worker(Config config, Jedis jedis) {
+    public Worker(Config config, String queue) {
+        //@ TODO come up with implementation for multiple queue
         this.config = config;
-        this.jedis = jedis;
+        this.jedis = new Jedis(config.getHost(),
+                config.getPort(), config.getTimeout());
+        this.queue = queue;
+    }
+
+    /**
+     * Starts a worker and registers the worker on the workers queue then begin
+     * polling for tasks.
+     */
+    @Override
+    public void run() {
+        pollForTasks();
+    }
+
+    /**
+     * Poll for tasks that are ready for execution.
+     */
+    private void pollForTasks() {
+        while (true) {
+            try {
+                Set readyTasks = getReadyTasks();
+                if (!readyTasks.isEmpty()) {
+                    processTasks(readyTasks);
+                } else {
+                    Thread.sleep(RECONNECT_SLEEP_TIME);
+                }
+            } catch (InterruptedException ex) {
+                
+            }
+        }
     }
     
-    /***
-     * Implement the worker.
+    /**
+     * Get the messages that are ready to execute. Messages only leave the queue
+     * once they are ready for execution so we check for the message between
+     * zero and current time
+     *
+     * @return
      */
+    private Set getReadyTasks() {
+        long currentTime = System.currentTimeMillis();
+        return jedis.zrangeByScore(this.queue, 0, Double.valueOf(currentTime));
+    }
     
-    public void work(){
+    /**
+     * Process the tasks that are ready for execution.
+     * @param readyTasks 
+     *        The tasks that are ready for execution as 
+     */
+    private void processTasks(Set readyTasks) {
+        
+        //@TODO this queue generation name should be changed.
+        String ackQueue = this.queue + "ack-queue";
+        String jobQueue = this.queue + "job-queue";
+       
+        readyTasks.forEach((item) -> {
+            long currentTime = System.currentTimeMillis();
+            jedis.zadd(ackQueue, Double.valueOf(currentTime), (String) item);
+            jedis.zrem(this.queue, (String[]) item);
+            String taskPayload = jedis.hget(jobQueue, String.valueOf(item));
+            processTask(taskPayload, String.valueOf(item));
+        });
+        
+    }
+    /**
+     *
+     * @param task The task to actually process
+     * @param queue The queue that is currently being executed.
+     */
+    private void processTask(String taskPayload, String taskId) {
+       
+        String ackQueue = this.queue + "ack-queue";
+        String jobQueue = this.queue + "job-queue";
+        ObjectMapper mapper = new ObjectMapper();
+        try {    
+            Task task = mapper.reader().readValue(taskPayload);
+            task.perform();
+        } catch (IOException ex) {
+           //Can't be processed requeuing wont help
+           jedis.zrem(this.queue, taskId);
+           jedis.zrem(ackQueue, taskId);
+           jedis.hdel(jobQueue, taskId);
+        } catch (Exception ex) {
+            LOG.error(ex.getMessage());
+        } finally {
+            ///We have a task that has finished execution.
+            ackTask(taskId);
+        }
+    }
+    /**
+     * Acknowledge that the task has already completed execution.
+     * @param taskId 
+     */
+    private void ackTask(String taskId) {
+        String ackQueue = this.queue + "ack-queue";
+        String jobQueue = this.queue + "job-queue";
+        
+        jedis.zrem(ackQueue, taskId);
+        jedis.hdel(jobQueue, taskId);
     }
 }
-

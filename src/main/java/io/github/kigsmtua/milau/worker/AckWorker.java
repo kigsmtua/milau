@@ -27,7 +27,15 @@ package io.github.kigsmtua.milau.worker;
  *
  * @author john.kiragu
  */
-public interface ExecutorInterface {
-    
-   
+public class AckWorker implements Runnable {
+    /**
+     * Polls for tasks that have been in Ack queue for a time
+     * longer than (x).
+     * 
+     * Tasks that have been in the Ack queue for long need to be delivered
+     * again hence ensuring at least once delivery semantics
+     */
+    @Override
+    public void run() {
+    }
 }
