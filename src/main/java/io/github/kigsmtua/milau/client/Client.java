@@ -22,15 +22,21 @@
 *
  */
 package io.github.kigsmtua.milau.client;
+import java.util.HashMap;
+import java.util.UUID;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kigsmtua.milau.Config;
+import io.github.kigsmtua.milau.task.Task;
 import redis.clients.jedis.Jedis;
 
 /**
  *
  * @author john.kiragu
  */
-public class Client extends AbstractClient {
+public class Client {
     
     private final Config config;
     private final Jedis jedis;
@@ -45,19 +51,63 @@ public class Client extends AbstractClient {
      *             if the Config is null
      */
     public Client(final Config config) {
-        super(config);
         this.config = config;
         this.jedis = new Jedis(this.config.getHost(),
                                this.config.getPort(), this.config.getTimeout());
     }
     
-    /**
-     * {@inheritDoc}
+     /**
+     * 
+     * Queues a job in a given queue to be run.
+     * 
+     * @param queue
+     *            the queue name
+     * @param future
+     *            time in milliseconds from now to execute the job
+     * @param task
+     *            the task to be enqueued
+     * 
+     * @TODO the operations required to execute a job should be atomic
+     * to avoid a job that has been scheduled and there is no half baked jobs
      */
-    @Override
-    protected void doEnqueue(String queue, String jobJson,
-            long future) throws Exception {
-        doEnqueue(this.jedis, queue, future, jobJson);
+    public void enqueue(String queue, Task task, long future) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            doEnqueue(queue, mapper.writeValueAsString(task), future);
+        } catch (JsonProcessingException ex) {
+            ///Decide what to do here
+        } catch (Exception ex) {
+            ///Decide what to do here
+        }
+    }
+    
+    
+    /**
+     * Helper method that encapsulates the minimum logic for adding a job to a
+     * queue.
+     * 
+     * @param jedis
+     *            the connection to Redis
+     * @param queue
+     *            the queue name
+     * @param future
+     *            time in milliseconds from now to execute the job
+     * @param jobJson
+     *            serialized class to be picked from the queue
+     * 
+     * @TODO the operations required to execute a job should be atomic
+     * to avoid a job that has been scheduled and there is no half baked jobs
+     */
+    private void doEnqueue(final String queue, 
+             final String jobJson, final long future) {
+        long currentTime = System.currentTimeMillis();
+        long timeToExecuteJob = currentTime + future;
+        UUID uuid = UUID.randomUUID();
+        String taskId = uuid.toString();
+        HashMap<String, Double> scores = new HashMap<>();
+        scores.put(taskId, Double.valueOf(timeToExecuteJob));
+        this.jedis.zadd(queue, scores);        
+        jedis.hset(queue, taskId, jobJson);
     }
     
 }

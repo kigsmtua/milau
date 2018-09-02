@@ -51,7 +51,7 @@ public class Worker implements Runnable {
     
     private final Jedis jedis;
     
-    private int concurrency;
+    private final int concurrency;
   
     /**
      * Instantiate a worker no?.
@@ -105,7 +105,6 @@ public class Worker implements Runnable {
             handleSuccess(task, queue);
             
         } catch (Exception ex) {
-            ///We intend to do some more magic here
             LOG.error("Error occurred..");
             handleFailure(task, queue);
            
@@ -113,6 +112,11 @@ public class Worker implements Runnable {
             Log.info("Finally a task got processed....");
         }
     }
+
+    /**
+     * @param task
+     * @param queue
+     */
     
     private void handleSuccess(final Task task, String queue) {
        
