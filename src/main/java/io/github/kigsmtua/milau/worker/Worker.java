@@ -23,18 +23,21 @@
  */
 package io.github.kigsmtua.milau.worker;
 
-import co.paralleluniverse.fibers.Fiber;
+
 import java.io.IOException;
 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+import com.esotericsoftware.minlog.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kigsmtua.milau.Config;
 import io.github.kigsmtua.milau.task.Task;
 import redis.clients.jedis.Jedis;
+
 
 /**
  *
@@ -83,7 +86,7 @@ public class Worker implements Runnable {
             } catch (IOException e) {
                 //
             } finally {
-                System.out.println("Something .....");
+                LOG.info("Worker finally quit here");
             }
         }
     }
@@ -102,11 +105,12 @@ public class Worker implements Runnable {
             handleSuccess(task, queue);
             
         } catch (Exception ex) {
-            
-           handleFailure(task, queue);  
+            ///We intend to do some more magic here
+            LOG.error("Error occurred..");
+            handleFailure(task, queue);
            
         } finally {
-            System.out.println();
+            Log.info("Finally a task got processed....");
         }
     }
     
