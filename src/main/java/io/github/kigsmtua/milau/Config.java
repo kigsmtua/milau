@@ -62,7 +62,7 @@ public final class Config {
          * @param val the timeout value
          * @return this ConfigBuilder
          */
-       public ConfigBuilder timeout(int val) {
+       public ConfigBuilder withTimeout(int val) {
            timeout = val;
            return this; 
        }
@@ -71,7 +71,7 @@ public final class Config {
         * @param val the password value
         * @return this ConfigBuilder
         */
-       public ConfigBuilder password(String val) {
+       public ConfigBuilder withPassword(String val) {
            password = val;
            return this; 
        }
@@ -80,7 +80,7 @@ public final class Config {
         * @param val the database value
         * @return this ConfigBuilder
         */
-       public ConfigBuilder database(int val) {
+       public ConfigBuilder withDatabase(int val) {
            database = val;
            return this; 
        }
@@ -89,7 +89,7 @@ public final class Config {
         * @param val the sentinels value
         * @return this ConfigBuilder
         */
-       public ConfigBuilder sentinels(Set<String> val) {
+       public ConfigBuilder withSentinels(Set<String> val) {
            sentinels = val;
            return this; 
        }
@@ -98,7 +98,7 @@ public final class Config {
         * @param val the masterName value
         * @return this ConfigBuilder
         */
-       public ConfigBuilder masterName(String val) {
+       public ConfigBuilder withMasterName(String val) {
            masterName = val;
            return this; 
        }

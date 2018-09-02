@@ -60,10 +60,9 @@ public class Worker implements Runnable {
     public Worker(Config config, int concurrency) {
         this.config = config;
         this.jedis = new Jedis(config.getHost(),
-                               config.getPort(), config.getTimeout());
+                config.getPort(), config.getTimeout());
         this.concurrency = concurrency;
     }
-    
     /**
      * Poll for tasks that are ready for execution.
      * The tasks that are ready for execution
@@ -121,9 +120,7 @@ public class Worker implements Runnable {
 
     @Override
     public void run() {
-        
         pollForTasks();
-        
     }
     
   }
