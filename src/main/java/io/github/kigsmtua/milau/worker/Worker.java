@@ -117,11 +117,10 @@ public class Worker implements Runnable {
         //@TODO this queue generation name should be changed.
         String ackQueue = this.queue + "ack-queue";
         String jobQueue = this.queue + "job-queue";
-       
         readyTasks.forEach((item) -> {
             long currentTime = System.currentTimeMillis();
             jedis.zadd(ackQueue, Double.valueOf(currentTime), (String) item);
-            jedis.zrem(this.queue, (String[]) item);
+            jedis.zrem(this.queue, (String) item);
             String taskPayload = jedis.hget(jobQueue, String.valueOf(item));
             processTask(taskPayload, String.valueOf(item));
         });
@@ -141,7 +140,6 @@ public class Worker implements Runnable {
             Task task = mapper.reader().readValue(taskPayload);
             task.perform();
         } catch (IOException ex) {
-           //Can't be processed requeuing wont help
            jedis.zrem(this.queue, taskId);
            jedis.zrem(ackQueue, taskId);
            jedis.hdel(jobQueue, taskId);
