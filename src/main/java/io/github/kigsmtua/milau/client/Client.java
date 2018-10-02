@@ -25,6 +25,9 @@ package io.github.kigsmtua.milau.client;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -37,10 +40,12 @@ import redis.clients.jedis.Jedis;
  * @author john.kiragu
  */
 public class Client {
-    
+
+
     private final Config config;
     private final Jedis jedis;
-    
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(Client.class);
     /**
      * Create a new Client, which creates it's own connection to Redis using
      * values from the Config.
@@ -55,37 +60,40 @@ public class Client {
         this.jedis = new Jedis(this.config.getHost(),
                                this.config.getPort(), this.config.getTimeout());
     }
-    
+
      /**
-     * 
+     *
      * Queues a job in a given queue to be run.
-     * 
+     *
      * @param queue
      *            the queue name
      * @param future
      *            time in milliseconds from now to execute the job
      * @param task
      *            the task to be enqueued
-     * 
+     *
      * the operations required to execute a job should be atomic
      * to avoid a job that has been scheduled and there is no half baked jobs
      */
     public void enqueue(String queue, Task task, long future) {
+
         ObjectMapper mapper = new ObjectMapper();
         try {
             doEnqueue(queue, mapper.writeValueAsString(task), future);
         } catch (JsonProcessingException ex) {
-            ///Decide what to do here
+            LOGGER.error("Error occured while serializing message {}:::",
+                    ex.getMessage());
         } catch (Exception ex) {
-            ///Decide what to do here
+            LOGGER.error("Execption occured while enqueueing messsage {}:::",
+                    ex.getMessage());
         }
     }
-    
-    
+
+
     /**
      * Helper method that encapsulates the minimum logic for adding a job to a
      * queue.
-     * 
+     *
      * @param jedis
      *            the connection to Redis
      * @param queue
@@ -94,20 +102,21 @@ public class Client {
      *            time in milliseconds from now to execute the job
      * @param jobJson
      *            serialized class to be picked from the queue
-     * 
+     *
      * the operations required to execute a job should be atomic
      * to avoid a job that has been scheduled and there is no half baked jobs
      */
-    private void doEnqueue(final String queue, 
+    private void doEnqueue(final String queue,
              final String jobJson, final long future) {
-        long currentTime = System.currentTimeMillis();
-        long timeToExecuteJob = currentTime + future;
+        long timeToExecuteJob = System.currentTimeMillis() + future;
         UUID uuid = UUID.randomUUID();
         String taskId = uuid.toString();
         HashMap<String, Double> scores = new HashMap<>();
         scores.put(taskId, Double.valueOf(timeToExecuteJob));
-        this.jedis.zadd(queue, scores);        
-        jedis.hset(queue, taskId, jobJson);
+        this.jedis.zadd(queue, scores);
+        //@TODO this needs to be cleaned up so as to work with all queues
+        String jobQueue = queue + "job-queue";
+        jedis.hset(jobQueue, taskId, jobJson);
     }
-    
+
 }
