@@ -60,7 +60,7 @@ public class Client {
         this.jedis = new Jedis(this.config.getHost(),
                                this.config.getPort(), this.config.getTimeout());
     }
-
+    
      /**
      *
      * Queues a job in a given queue to be run.
@@ -70,7 +70,7 @@ public class Client {
      * @param future
      *            time in milliseconds from now to execute the job
      * @param task
-     *            the task to be enqueued
+     *            the task to be queued
      *
      * the operations required to execute a job should be atomic
      * to avoid a job that has been scheduled and there is no half baked jobs
