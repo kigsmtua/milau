@@ -72,8 +72,6 @@ public class Client {
      * @param task
      *            the task to be queued
      *
-     * the operations required to execute a job should be atomic
-     * to avoid a job that has been scheduled and there is no half baked jobs
      */
     public void enqueue(String queue, Task task, long future) {
 
