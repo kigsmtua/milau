@@ -138,7 +138,7 @@ public class Worker implements Runnable {
         ObjectMapper mapper = new ObjectMapper();
         try {    
             Task task = mapper.reader().readValue(taskPayload);
-            task.perform();
+            //task.perform();
         } catch (IOException ex) {
            jedis.zrem(this.queue, taskId);
            jedis.zrem(ackQueue, taskId);

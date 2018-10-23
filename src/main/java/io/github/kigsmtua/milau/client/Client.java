@@ -23,7 +23,11 @@
  */
 package io.github.kigsmtua.milau.client;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+
+import javax.annotation.Nullable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +36,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kigsmtua.milau.Config;
-import io.github.kigsmtua.milau.task.Task;
+
 import redis.clients.jedis.Jedis;
 
 /**
@@ -66,34 +70,58 @@ public class Client {
      * Queues a job in a given queue to be run.
      *
      * @param queue
-     *            the queue name
+     *        the queue name is null can be supplied on class annotation
+     * @param taskClassName
+     *        the className of the job
+     * @param jobProperties
+     *        properties that can be set on your job
      * @param future
-     *            time in milliseconds from now to execute the job
-     * @param task
-     *            the task to be queued
-     *
+     *       time in milliseconds from now to execute the job
+     * @throws java.lang.Exception
+     *          
      */
-    public void enqueue(String queue, Task task, long future) {
+ 
+    public void enqueue(@Nullable String queue, String taskClassName,
+            Map<String, Object> jobProperties, long future) throws Exception {
+        
+        Optional<String> jobPayload = buildJobPayload(taskClassName, 
+                jobProperties);
+        if (jobPayload.isPresent()) {
+            doEnqueue(queue, jobPayload.get(), future);
+        } else {
+            throw new Exception("Unable to serialize job to send to queue");
+        }
 
-        ObjectMapper mapper = new ObjectMapper();
+    }
+    
+    /**
+     * Build job properties to stor in any time based store, could be in memory
+     * @param taskClassName
+     * @param jobProperties
+     * @return 
+     */
+    public Optional<String> buildJobPayload(String taskClassName, 
+            Map<String, Object> jobProperties) {
+        
+        Map<String, Object> jobPayload = new HashMap<>();
+        jobPayload.put("taskClassName", taskClassName);
+        jobPayload.put("jobProperties", jobProperties);
+        
         try {
-            doEnqueue(queue, mapper.writeValueAsString(task), future);
+            return Optional.of(new ObjectMapper().writeValueAsString(jobPayload));
         } catch (JsonProcessingException ex) {
-            LOGGER.error("Error occured while serializing message {}:::",
-                    ex.getMessage());
-        } catch (Exception ex) {
-            LOGGER.error("Execption occured while enqueueing messsage {}:::",
+            LOGGER.error("Error occured while serializing message {}",
                     ex.getMessage());
         }
+        return Optional.empty();
     }
-
 
     /**
      * Helper method that encapsulates the minimum logic for adding a job to a
      * queue.
      *
      * @param jedis
-     *            the connection to Redis
+     *            the connection to redis
      * @param queue
      *            the queue name
      * @param future
