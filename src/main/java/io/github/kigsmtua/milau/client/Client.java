@@ -36,7 +36,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kigsmtua.milau.Config;
-
 import redis.clients.jedis.Jedis;
 
 /**
@@ -95,7 +94,7 @@ public class Client {
     }
     
     /**
-     * Build job properties to stor in any time based store, could be in memory
+     * Build job properties to stor in any time based store, could be in memory.
      * @param taskClassName
      * @param jobProperties
      * @return 
@@ -108,7 +107,8 @@ public class Client {
         jobPayload.put("jobProperties", jobProperties);
         
         try {
-            return Optional.of(new ObjectMapper().writeValueAsString(jobPayload));
+            return Optional.of(new ObjectMapper().
+                    writeValueAsString(jobPayload));
         } catch (JsonProcessingException ex) {
             LOGGER.error("Error occured while serializing message {}",
                     ex.getMessage());
