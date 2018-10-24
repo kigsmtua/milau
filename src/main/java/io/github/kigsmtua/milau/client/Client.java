@@ -36,6 +36,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kigsmtua.milau.Config;
+import io.github.kigsmtua.milau.task.Task;
+import java.lang.annotation.Annotation;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -70,8 +72,8 @@ public class Client {
      *
      * @param queue
      *        the queue name is null can be supplied on class annotation
-     * @param taskClassName
-     *        the className of the job
+     * @param taskClass
+     *        The tasks that is picked 
      * @param jobProperties
      *        properties that can be set on your job
      * @param future
@@ -80,10 +82,22 @@ public class Client {
      *          
      */
  
-    public void enqueue(@Nullable String queue, String taskClassName,
-            Map<String, Object> jobProperties, long future) throws Exception {
+    public void enqueue(@Nullable String queue, Class<?> taskClass,
+             Map<String, Object> jobProperties,
+             long future) throws Exception {
         
-        Optional<String> jobPayload = buildJobPayload(taskClassName, 
+        Class clazz = taskClass.getClass();
+        
+        if (queue == null) {
+            
+            Task task = (Task) clazz.getAnnotation(Task.class);
+            queue = task.queueName();
+            
+            if (queue == null) {
+                throw new IllegalArgumentException("Missing argument queue for task");
+            }
+        }
+        Optional<String> jobPayload = buildJobPayload(taskClass.getSimpleName(), 
                 jobProperties);
         if (jobPayload.isPresent()) {
             doEnqueue(queue, jobPayload.get(), future);
