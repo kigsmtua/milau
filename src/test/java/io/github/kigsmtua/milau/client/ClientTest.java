@@ -1,6 +1,7 @@
 package io.github.kigsmtua.milau.client;
 
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -16,8 +17,6 @@ import io.github.kigsmtua.milau.Config;
 import io.github.kigsmtua.milau.TestAction;
 import io.github.kigsmtua.milau.TestActionNonAnnotated;
 import io.github.kigsmtua.milau.TestUtils;
-import java.io.IOException;
-
 import redis.clients.jedis.Jedis;
 
 /**
@@ -70,7 +69,8 @@ public class ClientTest {
        Map<String , Object> jopProperties = new HashMap<>();
        jopProperties.put("testActionID", 12333);
        jopProperties.put("someTestData", 23242);
-       this.client.enqueue("test-queue",  TestActionNonAnnotated.class, jopProperties, 0);
+       this.client.enqueue("test-queue",  TestActionNonAnnotated.class, 
+               jopProperties, 0);
        long currentTime = System.currentTimeMillis();
        Set enquedJobs = 
                this.jedis.zrangeByScore("test-queue", 0,

@@ -129,6 +129,12 @@ publishing{
 //    }
 }
 
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
 signing {
     sign publishing.publications.mavenJava
 }
