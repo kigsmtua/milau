@@ -21,21 +21,15 @@
 * SOFTWARE.
 *
  */
-package io.github.kigsmtua.milau.task;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package io.github.kigsmtua.milau;
 
 /**
  *
  * @author john.kiragu
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface Task {
-    String queueName();
+public class TestActionNonAnnotated implements Runnable {
+
+    @Override
+    public void run() {
+    }    
 }

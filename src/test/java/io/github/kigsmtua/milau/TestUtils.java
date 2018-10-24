@@ -21,21 +21,26 @@
 * SOFTWARE.
 *
  */
-package io.github.kigsmtua.milau.task;
+package io.github.kigsmtua.milau;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import redis.clients.jedis.Jedis;
 
 /**
  *
  * @author john.kiragu
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface Task {
-    String queueName();
+public class TestUtils {
+    
+    public static Jedis getJedisConnection(Config config) {
+        if (config == null) {
+            throw new IllegalArgumentException("Config cannot be null");
+        }
+        return new Jedis(config.getHost(), config.getPort(), 
+                config.getTimeout());
+    }
+    
+    private TestUtils() {
+        //Helper methods do not instantiate me
+    }
+    
 }
