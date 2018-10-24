@@ -83,13 +83,9 @@ public class Client {
  
     public void enqueue(@Nullable String queue, Class<?> taskClass,
              Map<String, Object> jobProperties,
-             long future) throws Exception {
-        
-        Class clazz = taskClass.getClass();
-        
-        if (queue == null) {
-            
-            Task task = (Task) clazz.getAnnotation(Task.class);
+             long future) throws Exception { 
+        if (queue == null) {   
+            Task task = (Task) taskClass.getAnnotation(Task.class);
             queue = task.queueName();
             
             if (queue == null) {
