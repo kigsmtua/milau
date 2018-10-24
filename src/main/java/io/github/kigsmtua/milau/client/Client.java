@@ -37,7 +37,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kigsmtua.milau.Config;
 import io.github.kigsmtua.milau.task.Task;
-import java.lang.annotation.Annotation;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -94,11 +93,12 @@ public class Client {
             queue = task.queueName();
             
             if (queue == null) {
-                throw new IllegalArgumentException("Missing argument queue for task");
+                throw new 
+                IllegalArgumentException("Missing argument queue for task");
             }
         }
-        Optional<String> jobPayload = buildJobPayload(taskClass.getSimpleName(), 
-                jobProperties);
+        Optional<String> jobPayload = 
+                buildJobPayload(taskClass.getSimpleName(), jobProperties);
         if (jobPayload.isPresent()) {
             doEnqueue(queue, jobPayload.get(), future);
         } else {
