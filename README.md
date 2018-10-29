@@ -4,7 +4,7 @@
 
 > A distributed task queue supporting priorities and time based exection based on redis. Named after the famous milau bridge (yes architecture fascinates me)
 
-Milau aims to achieve the following qu
+Milau aims to achieve the following queue recipe
 > 1. Distributed task execution
 > 2. Highly concurrent
 > 3. At-least-once delivery semantics
