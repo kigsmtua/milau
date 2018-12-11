@@ -86,9 +86,8 @@ public class Worker implements Runnable {
             try {
                 Set readyTasks = getReadyTasks();
                 if (!readyTasks.isEmpty()) {
-                    ///1. Get ready tasks 
-                    ///2. Test the met
-                 
+                    Map taskPayloads = getTaskPayloads(readyTasks);
+                    processTasks(taskPayloads);         
                 } else {
                     Thread.sleep(RECONNECT_SLEEP_TIME);
                 }
@@ -114,7 +113,7 @@ public class Worker implements Runnable {
      * Process the tasks that are ready for execution.
      * @param readyTasks 
      *        The tasks that are ready for execution as 
-     * @return  A set of job payloads that need to be pr
+     * @return  A set of job payloads that need to be executed
      */
     protected Map getTaskPayloads(Set readyTasks) {
         Map<String, String> taskPayloads = new HashMap<>();

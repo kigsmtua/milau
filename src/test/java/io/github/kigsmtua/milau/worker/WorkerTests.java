@@ -31,7 +31,7 @@ public class WorkerTests {
         this.client = new Client(config);
         this.jedis = TestUtils.getJedisConnection(config);
     }
-    
+        
     @Test
     public void testGetReadyTasksGetsOnlyReadyTasks() throws Exception {
         
@@ -90,6 +90,10 @@ public class WorkerTests {
         Assert.assertEquals(1, ackJobs.size());    
     }
     
+    @Test
+    public void testCorrectClassIsLoaded() {
+
+    }
 
     @Test
     public void testjobsAreAckedAfterExecution() throws Exception {
