@@ -102,7 +102,7 @@ public class Worker implements Runnable {
      *
      * @return
      */
-    private Set getReadyTasks() {
+    protected Set getReadyTasks() {
         long currentTime = System.currentTimeMillis();
         return jedis.zrangeByScore(this.queue, 0, Double.valueOf(currentTime));
     }
