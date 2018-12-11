@@ -30,7 +30,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * 
  * @author john.kiragu
  */
 @Target(ElementType.TYPE)

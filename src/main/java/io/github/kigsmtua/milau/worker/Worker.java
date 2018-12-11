@@ -24,6 +24,8 @@
 package io.github.kigsmtua.milau.worker;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -85,7 +87,9 @@ public class Worker implements Runnable {
             try {
                 Set readyTasks = getReadyTasks();
                 if (!readyTasks.isEmpty()) {
-                    processTasks(readyTasks);
+                    ///1. Get ready tasks 
+                    ///2. Test the met
+                 
                 } else {
                     Thread.sleep(RECONNECT_SLEEP_TIME);
                 }
@@ -111,9 +115,10 @@ public class Worker implements Runnable {
      * Process the tasks that are ready for execution.
      * @param readyTasks 
      *        The tasks that are ready for execution as 
+     * @return  A set of job payloads that need to be pr
      */
-    private void processTasks(Set readyTasks) {
-        
+    protected Map getTaskPayloads(Set readyTasks) {
+        Map<String, String> taskPayloads = new HashMap<>();
         //@TODO this queue generation name should be changed.
         String ackQueue = this.queue + "ack-queue";
         String jobQueue = this.queue + "job-queue";
@@ -122,33 +127,41 @@ public class Worker implements Runnable {
             jedis.zadd(ackQueue, Double.valueOf(currentTime), (String) item);
             jedis.zrem(this.queue, (String) item);
             String taskPayload = jedis.hget(jobQueue, String.valueOf(item));
-            processTask(taskPayload, String.valueOf(item));
+            taskPayloads.put(String.valueOf(item), taskPayload);
         });
-        
+        return taskPayloads;
     }
+
     /**
      *
      * @param task The task to actually process
      * @param queue The queue that is currently being executed.
      */
-    private void processTask(String taskPayload, String taskId) {
-       
+    private void processTasks(Map<String, String> tasks) {
+
         String ackQueue = this.queue + "ack-queue";
         String jobQueue = this.queue + "job-queue";
+        
         ObjectMapper mapper = new ObjectMapper();
-        try {    
-            Task task = mapper.reader().readValue(taskPayload);
-            //task.perform();
-        } catch (IOException ex) {
-           jedis.zrem(this.queue, taskId);
-           jedis.zrem(ackQueue, taskId);
-           jedis.hdel(jobQueue, taskId);
-        } catch (Exception ex) {
-            LOG.error(ex.getMessage());
-        } finally {
-            ///We have a task that has finished execution.
-            ackTask(taskId);
-        }
+
+        tasks.entrySet().forEach((task) -> {
+            String taskId = task.getKey();
+            String taskPayload = task.getValue();
+            try {
+                Task s = mapper.reader().readValue(taskPayload);
+                //task.perform();
+            } catch (IOException ex) {
+                //This task cannot be deserialized jist delete it
+               jedis.zrem(this.queue, taskId);
+               jedis.zrem(ackQueue, taskId);
+               jedis.hdel(jobQueue, taskId);
+            } catch (Exception ex) {
+                LOG.error(ex.getMessage());
+            } finally {
+                ///We have a task that has finished execution.
+                ackTask(taskId);
+            }
+        });        
     }
     /**
      * Acknowledge that the task has already completed execution.
