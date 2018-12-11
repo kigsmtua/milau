@@ -13,8 +13,6 @@ import io.github.kigsmtua.milau.Config;
 import io.github.kigsmtua.milau.TestActionNonAnnotated;
 import io.github.kigsmtua.milau.TestUtils;
 import io.github.kigsmtua.milau.client.Client;
-
-
 import redis.clients.jedis.Jedis;
 
 /**
@@ -61,9 +59,6 @@ public class WorkerTests {
         
     }
     
-    /**
-     * Do we need to select correct job class is called
-     */
     @Test
     public void testCorrectJobClassIsLoaded(){
     
