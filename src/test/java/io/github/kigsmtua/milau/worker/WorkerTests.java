@@ -58,7 +58,6 @@ public class WorkerTests {
         Assert.assertEquals(1, jobSet.size());
         
     }
-    
     @Test
     public void testJobsAreAddedToAckQueue() throws Exception {
  

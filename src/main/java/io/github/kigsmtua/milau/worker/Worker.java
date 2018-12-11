@@ -34,6 +34,10 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kigsmtua.milau.Config;
+import io.github.kigsmtua.milau.Task;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -145,21 +149,69 @@ public class Worker implements Runnable {
             String taskId = task.getKey();
             String taskPayload = task.getValue();
             try {
-                Object s = mapper.reader().readValue(taskPayload);
-                //task.perform();
+                Task taskToExecute = mapper.readValue(taskPayload, Task.class);
+                executeTask(taskToExecute);
             } catch (IOException ex) {
-                //This task cannot be deserialized jist delete it
+                // This task cannot be deserialized just delete it for v1
+                // @TODO should this task be added onto a deadletter queue
+                // human should be able to intervene here
                jedis.zrem(this.queue, taskId);
                jedis.zrem(ackQueue, taskId);
                jedis.hdel(jobQueue, taskId);
-            } catch (Exception ex) {
+            } catch (ClassNotFoundException | InstantiationException 
+                    | IllegalAccessException | IllegalArgumentException 
+                    | InvocationTargetException ex) {
+                //@TODO what to do with this exceptions
                 LOG.error(ex.getMessage());
             } finally {
-                ///We have a task that has finished execution.
+                //After execution remove the task in the Ack queue
                 ackTask(taskId);
             }
         });        
     }
+    
+    /**
+     * Execute a single task
+     * @throws java.lang.InstantiationException
+     * @param task 
+     * @throws java.lang.ClassNotFoundException 
+     * @throws java.lang.IllegalAccessException 
+     * @throws java.lang.reflect.InvocationTargetException 
+     */
+    protected  void executeTask(Task task) throws ClassNotFoundException, 
+            InstantiationException,
+            IllegalAccessException,
+            IllegalArgumentException,
+            InvocationTargetException {
+        
+      String taskClassName = task.getTaskClassName();
+      
+      Map taskProperties = task.getJobProperties();
+      
+      /**
+       * This will fail 
+       */
+      
+      Class<?> t = Class.forName(taskClassName);
+  
+      Constructor constructorToUse = t.getDeclaredConstructors()[0];
+      
+      Object instance = constructorToUse.newInstance();
+      
+      //W
+     
+      if (instance instanceof Runnable) {
+          ///Invoke this guy 
+      }
+      
+      
+    }
+    
+    private void setTaskProperties() {
+        //This is just how we setup the task properties
+        //What does this evn men
+    }
+    
     /**
      * Acknowledge that the task has already completed execution.
      * @param taskId 
