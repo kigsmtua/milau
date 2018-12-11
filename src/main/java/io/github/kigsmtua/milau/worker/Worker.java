@@ -133,11 +133,10 @@ public class Worker implements Runnable {
     }
 
     /**
-     *
-     * @param task The task to actually process
-     * @param queue The queue that is currently being executed.
+     * Process tasks.
+     * @param tasks
      */
-    private void processTasks(Map<String, String> tasks) {
+    protected void processTasks(Map<String, String> tasks) {
 
         String ackQueue = this.queue + "ack-queue";
         String jobQueue = this.queue + "job-queue";
@@ -148,7 +147,7 @@ public class Worker implements Runnable {
             String taskId = task.getKey();
             String taskPayload = task.getValue();
             try {
-                Task s = mapper.reader().readValue(taskPayload);
+                Object s = mapper.reader().readValue(taskPayload);
                 //task.perform();
             } catch (IOException ex) {
                 //This task cannot be deserialized jist delete it

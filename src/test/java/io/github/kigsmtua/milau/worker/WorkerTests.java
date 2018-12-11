@@ -87,12 +87,40 @@ public class WorkerTests {
         Set ackJobs = jedis.zrangeByScore(ackQueue, 0, 
                 Double.valueOf(currentTime));
         
-        Assert.assertEquals(1, ackJobs.size());       
+        Assert.assertEquals(1, ackJobs.size());    
     }
     
+
     @Test
-    public void testCorrectJobClassIsLoaded(){
-    
+    public void testjobsAreAckedAfterExecution() throws Exception {
+        String queue = "test-queue";
+        Map<String , Object> jopProperties = new HashMap<>();
+        jopProperties.put("testActionID", 12333);
+        jopProperties.put("someTestData", 23242);
+        
+        this.client.enqueue("test-queue",  TestActionNonAnnotated.class, 
+            jopProperties, 0);
+        
+        Config config = new Config.ConfigBuilder("127.0.0.1", 6379).build();
+        
+      
+        Worker worker = new Worker(config, queue);
+        
+        Set jobSet = worker.getReadyTasks();
+
+        Map tasks = worker.getTaskPayloads(jobSet);
+        
+        Assert.assertEquals(1, tasks.size());
+
+        worker.processTasks(tasks);
+        
+        long currentTime = System.currentTimeMillis();
+        
+        String ackQueue = queue + "ack-queue";
+        
+        Set acSet = jedis.zrangeByScore(ackQueue, 0,
+                Double.valueOf(currentTime));
+         Assert.assertEquals(0, acSet.size()); 
     }
     
     @After
