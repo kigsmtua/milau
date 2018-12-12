@@ -19,7 +19,6 @@ How To Use
 
 ```java
 
-// Create your task class that will be the job that is executed
 @Task(
    queueName = "my-task-queue"
 )
@@ -42,24 +41,18 @@ Class MyJob implements Runnable {
    }
 }
 
-//Create connection to redis
 Config config = new Config.ConfigBuilder("127.0.0.1", 6379).build();
 
-//Create some properties to pass along to your job
 Map<String , Object> jopProperties = new HashMap<>();
 jopProperties.put("name", "johnDoe");
 
-//Instantiate the client
 Client client = new Client(config);
-//Send your job to the queue
-client.enqueue(null,  TestAction.class, jopProperties, 0);
+client.enqueue(null,  MyJob.class, jopProperties, 0);
 
-//You can start your worker
 Worker worker = new Worker(config, queue);
 Thread workerThread = new Thread(worker);
 workerThread.start()
 
-///And you have your queue jobs running
 ```
 
 > **Whats Remaining** 
