@@ -55,7 +55,7 @@ public class ClientTest {
            try {
              Map<String, Object> payload = 
                       mapper.readValue(taskPayload, Map.class);
-             Assert.assertEquals(TestAction.class.getSimpleName(),
+             Assert.assertEquals(TestAction.class.getCanonicalName(),
                      payload.get("taskClassName"));
              Assert.assertEquals(jopProperties, payload.get("jobProperties"));
            } catch (IOException ex) {
@@ -85,7 +85,8 @@ public class ClientTest {
            try {
              Map<String, Object> payload = 
                       mapper.readValue(taskPayload, Map.class);
-             Assert.assertEquals(TestActionNonAnnotated.class.getSimpleName(),
+             Assert.assertEquals(TestActionNonAnnotated.class.
+                     getCanonicalName(),
                      payload.get("taskClassName"));
              Assert.assertEquals(jopProperties, payload.get("jobProperties"));
            } catch (IOException ex) {

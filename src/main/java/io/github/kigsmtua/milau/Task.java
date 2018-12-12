@@ -23,28 +23,33 @@
  */
 package io.github.kigsmtua.milau;
 
+import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import io.github.kigsmtua.milau.task.Task;
 /**
  *
  * @author john.kiragu
  */
-@Task(
-   queueName = "test-queue"
-)
-public class TestAction implements  Runnable {
-    private static final Logger LOG = LoggerFactory.getLogger(TestAction.class);
+public class Task {
     
-    @Override
-    public void run() {
-        LOG.info("TestAction called...");
-        try {
-            ///Just sleep for sometime to indicate work being done
-            Thread.sleep(1);
-        } catch (InterruptedException e) {
-        }
+    private String taskClassName;
+    
+    private Map<String, Object> jobProperties;
+    
+
+    public String getTaskClassName() {
+        return taskClassName;
     }
+
+    public void setTaskClassName(String taskClassName) {
+        this.taskClassName = taskClassName;
+    }
+
+    public Map<String, Object> getJobProperties() {
+        return jobProperties;
+    }
+
+    public void setJobProperties(Map<String, Object> jobProperties) {
+        this.jobProperties = jobProperties;
+    }
+    
 }

@@ -24,7 +24,13 @@
 package io.github.kigsmtua.milau.worker;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +38,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.kigsmtua.milau.Config;
-import io.github.kigsmtua.milau.task.Task;
+import io.github.kigsmtua.milau.Task;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -85,7 +91,8 @@ public class Worker implements Runnable {
             try {
                 Set readyTasks = getReadyTasks();
                 if (!readyTasks.isEmpty()) {
-                    processTasks(readyTasks);
+                    Map taskPayloads = getTaskPayloads(readyTasks);
+                    processTasks(taskPayloads);         
                 } else {
                     Thread.sleep(RECONNECT_SLEEP_TIME);
                 }
@@ -102,7 +109,7 @@ public class Worker implements Runnable {
      *
      * @return
      */
-    private Set getReadyTasks() {
+    protected Set getReadyTasks() {
         long currentTime = System.currentTimeMillis();
         return jedis.zrangeByScore(this.queue, 0, Double.valueOf(currentTime));
     }
@@ -111,9 +118,10 @@ public class Worker implements Runnable {
      * Process the tasks that are ready for execution.
      * @param readyTasks 
      *        The tasks that are ready for execution as 
+     * @return  A set of job payloads that need to be executed
      */
-    private void processTasks(Set readyTasks) {
-        
+    protected Map getTaskPayloads(Set readyTasks) {
+        Map<String, String> taskPayloads = new HashMap<>();
         //@TODO this queue generation name should be changed.
         String ackQueue = this.queue + "ack-queue";
         String jobQueue = this.queue + "job-queue";
@@ -122,34 +130,90 @@ public class Worker implements Runnable {
             jedis.zadd(ackQueue, Double.valueOf(currentTime), (String) item);
             jedis.zrem(this.queue, (String) item);
             String taskPayload = jedis.hget(jobQueue, String.valueOf(item));
-            processTask(taskPayload, String.valueOf(item));
+            taskPayloads.put(String.valueOf(item), taskPayload);
         });
-        
+        return taskPayloads;
     }
+
     /**
-     *
-     * @param task The task to actually process
-     * @param queue The queue that is currently being executed.
+     * Process tasks.
+     * @param tasks
      */
-    private void processTask(String taskPayload, String taskId) {
-       
+    protected void processTasks(Map<String, String> tasks) {
+
         String ackQueue = this.queue + "ack-queue";
         String jobQueue = this.queue + "job-queue";
+        
         ObjectMapper mapper = new ObjectMapper();
-        try {    
-            Task task = mapper.reader().readValue(taskPayload);
-            //task.perform();
-        } catch (IOException ex) {
-           jedis.zrem(this.queue, taskId);
-           jedis.zrem(ackQueue, taskId);
-           jedis.hdel(jobQueue, taskId);
-        } catch (Exception ex) {
-            LOG.error(ex.getMessage());
-        } finally {
-            ///We have a task that has finished execution.
-            ackTask(taskId);
+        
+        ///If we have few jobs just spin appropriate number of threads
+        ///Otherwise use the OptimalThreadPool Size
+        ///connections = ((core_count * 2) + effective_spindle_count)
+        int processorCount = Runtime.getRuntime().availableProcessors();
+        
+        int optimalPoolSize  = (processorCount * 2) + 2;
+        
+        ExecutorService executor;
+        
+        if (tasks.size() <= optimalPoolSize) {
+            executor = Executors.newFixedThreadPool(tasks.size());
+        } else {
+            executor = Executors.newFixedThreadPool(optimalPoolSize);
         }
+                
+        tasks.entrySet().forEach((task) -> {
+            String taskId = task.getKey();
+            String taskPayload = task.getValue();
+            try {
+                Task deserializedTask = mapper.readValue(taskPayload, 
+                        Task.class);
+                Runnable taskToExecute = getTaskToExecute(deserializedTask);
+                executor.execute(taskToExecute);
+            } catch (IOException ex) {
+                // This task cannot be deserialized just delete it for v1
+                // @TODO should this task be added onto a deadletter queue
+                // human should be able to intervene here
+               jedis.zrem(this.queue, taskId);
+               jedis.zrem(ackQueue, taskId);
+               jedis.hdel(jobQueue, taskId);
+            } catch (ClassNotFoundException | InstantiationException 
+                    | IllegalAccessException | IllegalArgumentException 
+                    | InvocationTargetException | NoSuchMethodException ex) {
+                //@TODO what to do with this exceptions
+                LOG.error(ex.getMessage());
+            } finally {
+                //After execution acknowlege that the task was completed
+                ackTask(taskId);
+            }
+        });        
     }
+    
+    /**
+     * Execute a single task.
+     * @return 
+     * @throws java.lang.InstantiationException
+     * @param task 
+     * @throws java.lang.ClassNotFoundException 
+     * @throws java.lang.IllegalAccessException 
+     * @throws java.lang.reflect.InvocationTargetException 
+     * @throws java.lang.NoSuchMethodException 
+     */
+    protected  Runnable getTaskToExecute(Task task) 
+            throws ClassNotFoundException, 
+            InstantiationException,
+            IllegalAccessException,
+            IllegalArgumentException,
+            InvocationTargetException,
+            NoSuchMethodException {
+    
+      String taskClassName = task.getTaskClassName();
+      Map taskProperties = task.getJobProperties();
+      Class<?> t = Class.forName(taskClassName);
+      Constructor constructorToUse = t.getConstructor();
+      Object instance = constructorToUse.newInstance();      
+      return  (Runnable) instance;
+    }
+    
     /**
      * Acknowledge that the task has already completed execution.
      * @param taskId 
