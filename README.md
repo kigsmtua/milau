@@ -13,7 +13,7 @@
 
 **Installation**
 
-Maven central 
+Maven central
 
 ```xml
 <dependency>
@@ -31,9 +31,9 @@ Maven central
    queueName = "my-task-queue"
 )
 Class MyJob implements Runnable {
-   
+
    private String name;
-   
+
    public String getName() {
      return this.name;
    }
@@ -63,7 +63,7 @@ workerThread.start()
 
 ```
 
-**Whats Remaining** 
+**Whats Remaining**
 > 1. Worker to run for all/multiple queues
 > 2. Record number of failures/keep stats
 > 3. Ability to pause given queues
@@ -71,5 +71,9 @@ workerThread.start()
 > 5. Finish up on the Ack module
 > 6. Build recovery strategy for the worker module
 
-Contributions are welcome
+## Contributing
+Please read [CONTRIBUTING.md](https://github.com/kigsmtua/milau/blob/master/CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](https://github.com/kigsmtua/milau/blob/master/CODE_OF_CONDUCT.md)
+Contributions are very welcome(the more the merrier)
 
+## Versioning
+We use [SemVer](https://semver.org/) for versioning. All releases are taggged please checkout a particular tag if testing as all code goes into master
