@@ -62,11 +62,13 @@ workerThread.start()
 ///And you have your queue jobs running
 ```
 
-> Whats Remaining 
-1. Worker to run for all/multiple queues
-2. Record number of failures/keep stats
-3. Ability to pause given queues
-4. Use green threads to see if performance actually gets to improves
-5. Finish up on the Ack module
-6. Build recovery strategy for the worker module
+> **Whats Remaining** 
+> 1. Worker to run for all/multiple queues
+> 2. Record number of failures/keep stats
+> 3. Ability to pause given queues
+> 4. Use green threads to see if performance actually gets to improves
+> 5. Finish up on the Ack module
+> 6. Build recovery strategy for the worker module
+
+Contributions and usages are welcome
 
