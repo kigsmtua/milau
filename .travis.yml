@@ -8,6 +8,6 @@ services:
 before_script:
   - chmod +x gradlew
 script:
-  - ./gradlew check
+  - ./gradlew check -D travis=true
 after_success:
   - bash <(curl -s https://codecov.io/bash)
