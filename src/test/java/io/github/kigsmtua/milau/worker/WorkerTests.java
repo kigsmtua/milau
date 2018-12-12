@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import io.github.kigsmtua.milau.Config;
 import io.github.kigsmtua.milau.Task;
+import io.github.kigsmtua.milau.TestAction;
 import io.github.kigsmtua.milau.TestActionNonAnnotated;
 import io.github.kigsmtua.milau.TestUtils;
 import io.github.kigsmtua.milau.client.Client;
@@ -25,8 +26,8 @@ public class WorkerTests {
     private Client client;
     
     private Jedis jedis;
-    
 
+    
     @Before
     public  void setUp() {
         Config config = new Config.ConfigBuilder("127.0.0.1", 6379).build();
@@ -90,6 +91,41 @@ public class WorkerTests {
         
         Assert.assertEquals(1, ackJobs.size());    
     }
+    
+    
+    @Test
+    public void testJobsArePickedFromQueueAndExecuted() throws Exception {
+       Map<String , Object> jopProperties = new HashMap<>();
+       jopProperties.put("testActionID", 12333);
+       jopProperties.put("someTestData", 23242);
+       this.client.enqueue(null,  TestAction.class, jopProperties, 0);
+
+       String  queueName = "test-queue";
+       
+       Config config = new Config.ConfigBuilder("127.0.0.1", 6379).build();
+
+       Worker worker = new Worker(config, queueName);
+       
+       Set jobSet = worker.getReadyTasks();
+
+       Map tasks = worker.getTaskPayloads(jobSet);
+        
+       Assert.assertEquals(1, tasks.size());
+
+       worker.processTasks(tasks);
+       
+       String ackQueue = queueName + "ack-queue";
+       
+       long currentTime = System.currentTimeMillis();
+       Set jobQueue = jedis.zrangeByScore(queueName, 0, 
+                Double.valueOf(currentTime));
+       Assert.assertEquals(0, jobQueue.size()); 
+
+       Set acSet = jedis.zrangeByScore(ackQueue, 0, 
+                Double.valueOf(currentTime));
+
+       Assert.assertEquals(0, acSet.size());   
+    }
 
     @Test
     public void testCorrectClassIsLoaded() throws ClassNotFoundException,
@@ -144,7 +180,7 @@ public class WorkerTests {
         
         Set acSet = jedis.zrangeByScore(ackQueue, 0,
                 Double.valueOf(currentTime));
-         Assert.assertEquals(0, acSet.size()); 
+        Assert.assertEquals(0, acSet.size()); 
     }
     
     @After
