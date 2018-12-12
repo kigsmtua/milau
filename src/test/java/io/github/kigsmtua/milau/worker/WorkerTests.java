@@ -1,5 +1,6 @@
 package io.github.kigsmtua.milau.worker;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.github.kigsmtua.milau.Config;
+import io.github.kigsmtua.milau.Task;
 import io.github.kigsmtua.milau.TestActionNonAnnotated;
 import io.github.kigsmtua.milau.TestUtils;
 import io.github.kigsmtua.milau.client.Client;
@@ -88,10 +90,29 @@ public class WorkerTests {
         
         Assert.assertEquals(1, ackJobs.size());    
     }
-    
-    @Test
-    public void testCorrectClassIsLoaded() {
 
+    @Test
+    public void testCorrectClassIsLoaded() throws ClassNotFoundException,
+            InstantiationException, IllegalAccessException, 
+            IllegalArgumentException, InvocationTargetException, 
+            NoSuchMethodException {
+      Task task = new Task();
+      Map<String , Object> jopProperties = new HashMap<>();
+      jopProperties.put("testActionID", 12333);
+      jopProperties.put("someTestData", 23242);
+      String taskClassName = TestActionNonAnnotated.class.getCanonicalName();
+      task.setTaskClassName(taskClassName);
+      task.setJobProperties(jopProperties);
+      
+      Config config = new Config.ConfigBuilder("127.0.0.1", 6379).build();
+      Worker worker = new Worker(config, "test-queue");
+      
+      Object jobInstance = worker.getTaskToExecute(task);  
+
+      Assert.assertTrue(jobInstance instanceof Runnable);
+      Class taskClass = jobInstance.getClass();
+      String taskName = taskClass.getCanonicalName();
+      Assert.assertEquals(taskClassName, taskName);
     }
 
     @Test

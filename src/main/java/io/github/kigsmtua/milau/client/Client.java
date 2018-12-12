@@ -94,7 +94,7 @@ public class Client {
             }
         }
         Optional<String> jobPayload = 
-                buildJobPayload(taskClass.getSimpleName(), jobProperties);
+                buildJobPayload(taskClass.getCanonicalName(), jobProperties);
         if (jobPayload.isPresent()) {
             doEnqueue(queue, jobPayload.get(), future);
         } else {
