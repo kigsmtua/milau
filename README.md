@@ -5,6 +5,14 @@
 > A distributed task queue supporting priorities and time based exection based on redis. Named after the famous milau bridge (yes architecture fascinates me)
 > The worker only supports one queue and uses Traditional threads based on CPU count (Work is in progress to make it support multiple queues)
 
+**Features**
+> 1. At least once delivery
+> 2. Jobs are executed at only a specified time in future.
+> 3. Each job has 3 queues associated with it
+> 4. Redis is the only supported backend
+
+**Installation**
+
 Maven central 
 
 ```xml
@@ -15,7 +23,7 @@ Maven central
 </dependency>
 ```
 
-How To Use
+**How To Use(Quickstart)**
 
 ```java
 
@@ -55,7 +63,7 @@ workerThread.start()
 
 ```
 
-> **Whats Remaining** 
+**Whats Remaining** 
 > 1. Worker to run for all/multiple queues
 > 2. Record number of failures/keep stats
 > 3. Ability to pause given queues
@@ -63,5 +71,5 @@ workerThread.start()
 > 5. Finish up on the Ack module
 > 6. Build recovery strategy for the worker module
 
-Contributions and usages are welcome
+Contributions are welcome
 
