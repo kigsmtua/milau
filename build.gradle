@@ -37,7 +37,6 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.6'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
     compile group: 'co.paralleluniverse', name: 'quasar-core', version: '0.7.5'
-    compile group: 'com.beust', name: 'jcommander', version: '1.72'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     compile 'com.google.guava:guava:23.0'
     testCompile 'junit:junit:4.12'
