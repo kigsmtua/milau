@@ -18,7 +18,7 @@ Maven central
 ```xml
 <dependency>
   <groupId>io.github.kigsmtua</groupId>
-  <artifactId>milau</artifactId>
+  <artifactId>Milau</artifactId>
   <version>0.1.0</version>
 </dependency>
 ```
