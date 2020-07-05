@@ -59,7 +59,7 @@ client.enqueue(null,  MyJob.class, jopProperties, 0);
 
 Worker worker = new Worker(config, queue);
 Thread workerThread = new Thread(worker);
-workerThread.start()
+workerThread.start();
 
 ```
 
